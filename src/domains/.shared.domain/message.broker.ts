@@ -1,8 +1,8 @@
 export interface MQProducer {
-    publish<T>(message: T, topic: string, ack: number): Promise<void>;
+    publish(messageValues: (string | number | boolean)[][], topic: string, ack: boolean): Promise<void>;
 }
 
 export interface MQConsumer {
-    on(topic: string, handler: (message: Buffer) => Promise<void> | void): void
+    on(topic: string, handler: (messages: string[]) => Promise<void> | void): this
     startConsumer(): Promise<void>
 }

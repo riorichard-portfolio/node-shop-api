@@ -1,7 +1,7 @@
 import { Pool } from 'pg';
 
 import SqlDb from '../domains/.shared.domain/sql.db'
-import { TPostgreConfig } from 'src/config/config.instances/postgre.config';
+import { TPostgreConfig } from '../config/config.instances/postgre.config';
 
 export default class PostgreDatabase implements SqlDb {
     private readonly pool: Pool;

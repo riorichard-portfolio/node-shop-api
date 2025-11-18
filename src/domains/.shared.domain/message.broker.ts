@@ -1,5 +1,5 @@
 export interface MQProducer {
-    publish(messageValues: (string | number | boolean)[][], topic: string, ack: boolean): Promise<void>;
+    publish(messageValues: (string | number | boolean)[][], topic: string, ack?: boolean): Promise<void>;
 }
 
 export interface MQConsumer {

@@ -1,9 +1,12 @@
 import { Pool } from 'pg';
 
-import SqlDb from '../domains/.shared.domain/sql.db'
+import { SqlCommandDB, SqlQueryDB } from '../domains/.shared.domain/sql.db'
 import { TPostgreConfig } from '../config/config.instances/postgre.config';
 
-export default class PostgreDatabase implements SqlDb {
+const errorColumnsLengthNotAsExpected = 'invalid columns: column length received is not same as expected'
+const errorColumnsTypeNotAsExpected = 'invalid columns: column type is mismatch with expected type'
+
+export default class PostgreDatabase implements SqlCommandDB, SqlQueryDB {
     private readonly pool: Pool;
 
     constructor(config: TPostgreConfig) {
@@ -64,7 +67,16 @@ export default class PostgreDatabase implements SqlDb {
         }
     }
 
-    public async query(sql: string, params: string[] = []): Promise<unknown> {
+
+    public async query<const T extends ('string' | 'number' | 'boolean')[]>(
+        sql: string,
+        columnTypes: T,
+        params: (string | number | boolean)[] = []
+    ): Promise<
+        { [K in keyof T]: T[K] extends 'string' ? string :
+            T[K] extends 'number' ? number :
+            T[K] extends 'boolean' ? boolean : never;
+        }[]> {
         const client = await this.pool.connect();
         try {
             const result = await client.query({
@@ -72,7 +84,19 @@ export default class PostgreDatabase implements SqlDb {
                 values: [...params],
                 rowMode: 'array'
             });
-            return result.rows;
+
+            const firstRow = result.rows[0]
+            if (firstRow === undefined) return []
+            if (columnTypes.length != firstRow.length) { // check if column expected is same as column received
+                throw new Error(errorColumnsLengthNotAsExpected)
+            }
+            for (let colIndex = 0; colIndex < columnTypes.length; colIndex++) {
+                if (typeof firstRow[colIndex] !== columnTypes[colIndex]) {
+                    throw new Error(errorColumnsTypeNotAsExpected)
+                }
+            }
+
+            return result.rows as any;
         } finally {
             client.release();
         }

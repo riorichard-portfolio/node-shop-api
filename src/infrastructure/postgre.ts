@@ -3,6 +3,8 @@ import { Pool } from 'pg';
 import { SqlCommandDB, SqlQueryDB } from '../domains/.shared.domain/sql.db'
 import { TPostgreConfig } from '../config/config.instances/postgre.config';
 
+const generalRowMode = 'array'
+
 const errorColumnsLengthNotAsExpected = 'invalid columns: column length received is not same as expected'
 const errorColumnsTypeNotAsExpected = 'invalid columns: column type is mismatch with expected type'
 
@@ -82,7 +84,7 @@ export default class PostgreDatabase implements SqlCommandDB, SqlQueryDB {
             const result = await client.query({
                 text: sql,
                 values: [...params],
-                rowMode: 'array'
+                rowMode: generalRowMode
             });
 
             const firstRow = result.rows[0]

@@ -1,5 +1,5 @@
 import { Kafka, Producer, Consumer } from "kafkajs";
- 
+
 import { MQProducer, MQConsumer } from '../domains/.shared.domain/message.broker'
 import { TKafkaConfig } from "../config/config.instances/kafka.config";
 
@@ -70,7 +70,7 @@ export default class KafkaMQ implements MQProducer, MQConsumer {
         return 1;                                   // Wait for leader only
     }
 
-    public async publish(messageValues: (string | number | boolean)[][], topic: string, ack: boolean = true): Promise<void> {
+    public async publish<T>(messageValues: T[], topic: string, ack: boolean = true): Promise<void> {
         this.verifyStarted()
         await this.producer.send({
             topic,

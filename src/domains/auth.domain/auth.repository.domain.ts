@@ -1,3 +1,13 @@
+import { RepositoryResult } from '../.shared.domain/types'
+
+export type ValidSession = {
+    isValid(): boolean
+}
+
+export interface ValidateSessionData {
+    sessionId(): string
+}
+
 export interface AuthQueryRepository {
-    isSessionValid(sessionId: string): Promise<boolean>
+    validateSession(data: ValidateSessionData): Promise<RepositoryResult<ValidSession>>
 }

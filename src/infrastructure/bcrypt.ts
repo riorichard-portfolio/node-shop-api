@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 
-import { BcryptHasher, BcryptVerifier } from '../domains/.shared.domain/bcrypt'
+import { BcryptHasher, BcryptVerifier, HashedString, } from '../domains/.shared.domain/bcrypt'
 
 export default class Bcrypt implements BcryptHasher, BcryptVerifier {
     private readonly hashRounds: number
@@ -8,8 +8,13 @@ export default class Bcrypt implements BcryptHasher, BcryptVerifier {
         this.hashRounds = hashRounds
     }
 
-    public bcryptHash(stringData: string): Promise<string> {
-        return bcrypt.hash(stringData, this.hashRounds)
+    public async bcryptHash(stringData: string): Promise<HashedString> {
+        const hashedString = await bcrypt.hash(stringData, this.hashRounds)
+        return {
+            value() {
+                return hashedString
+            }
+        }
     }
 
     public bcryptVerify(stringToCompare: string, hashsedString: string): Promise<boolean> {

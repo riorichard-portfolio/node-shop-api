@@ -1,12 +1,7 @@
 import { Pool } from 'pg';
 
-import { SqlCommandDB, SqlQueryDB } from '../domains/.shared.domain/sql.db'
+import { Param, QuerySchema, SchemaToType, SqlCommandDB, SqlQueryDB } from '../domains/.shared.domain/sql.db'
 import { TPostgreConfig } from '../config/config.instances/postgre.config';
-
-const generalRowMode = 'array'
-
-const errorColumnsLengthNotAsExpected = 'invalid columns: column length received is not same as expected'
-const errorColumnsTypeNotAsExpected = 'invalid columns: column type is mismatch with expected type'
 
 export default class PostgreDatabase implements SqlCommandDB, SqlQueryDB {
     private readonly pool: Pool;
@@ -49,7 +44,7 @@ export default class PostgreDatabase implements SqlCommandDB, SqlQueryDB {
         }
     }
 
-    public async command(sql: string, params: string[] = []): Promise<void> {
+    public async command(sql: string, params: Param[] = []): Promise<void> {
         const client = await this.pool.connect();
         try {
             const doBlockSql = `
@@ -70,35 +65,23 @@ export default class PostgreDatabase implements SqlCommandDB, SqlQueryDB {
     }
 
 
-    public async query<const T extends ('string' | 'number' | 'boolean')[]>(
-        sql: string,
-        columnTypes: T,
-        params: (string | number | boolean)[] = []
-    ): Promise<
-        { [K in keyof T]: T[K] extends 'string' ? string :
-            T[K] extends 'number' ? number :
-            T[K] extends 'boolean' ? boolean : never;
-        }[]> {
+    public async query<const T extends QuerySchema>(sql: string, schema: T, params: Param[] = []): Promise<SchemaToType<T>[]> {
         const client = await this.pool.connect();
         try {
-            const result = await client.query({
+            const queryResult = await client.query({
                 text: sql,
-                values: [...params],
-                rowMode: generalRowMode
+                values: [...params]
             });
-
-            const firstRow = result.rows[0]
-            if (firstRow === undefined) return []
-            if (columnTypes.length != firstRow.length) { // check if column expected is same as column received
-                throw new Error(errorColumnsLengthNotAsExpected)
-            }
-            for (let colIndex = 0; colIndex < columnTypes.length; colIndex++) {
-                if (typeof firstRow[colIndex] !== columnTypes[colIndex]) {
-                    throw new Error(errorColumnsTypeNotAsExpected)
+            const firstRow = queryResult.rows[0]
+            if (firstRow != undefined) {
+                for (const [rowColumn, rowColumnType] of Object.entries(schema)) {
+                    if (typeof firstRow[rowColumn] !== rowColumnType) {
+                        throw new Error(`invalid column: column type ${rowColumn} not match with ${rowColumnType} in schema ${schema}`)
+                    }
                 }
             }
+            return queryResult.rows
 
-            return result.rows as any;
         } finally {
             client.release();
         }

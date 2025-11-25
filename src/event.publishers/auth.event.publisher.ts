@@ -1,4 +1,4 @@
-import { AuthEventPublisher as AuthPublisher } from "../domains/auth.domain/auth.event.domain";
+import { AuthEventPublisher as AuthPublisher, SessionToUpsert } from "../domains/auth.domain/auth.event.domain";
 import { AuthMQTopics } from "../domains/.shared.domain/message.broker.topics";
 
 import { MQProducer } from "../domains/.shared.domain/message.broker";
@@ -15,9 +15,9 @@ export default class AuthEventPublisher implements AuthPublisher {
         this.topics = topics
     }
 
-    public async publishSessionCreated(sessionId: string, userId: string, expiredAt: number): Promise<void> {
+    public async publishSessionCreated(data: SessionToUpsert): Promise<void> {
         await this.producer.publish(
-            [[sessionId, userId, expiredAt]],
+            [data],
             this.topics.SESSION_CREATED,
             false
         )

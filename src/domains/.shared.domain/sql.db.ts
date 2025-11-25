@@ -1,16 +1,22 @@
-type Param = string | number | boolean
-type ColumnType = 'string' | 'boolean' | 'number'
+export type Param = string | number | boolean
+export interface QuerySchema {
+    [key: string]: 'string' | 'number' | 'boolean' 
+}
+
+export type SchemaToType<T extends QuerySchema> = {
+    [K in keyof T]:
+    T[K] extends 'string' ? string :
+    T[K] extends 'number' ? number :
+    T[K] extends 'boolean' ? boolean :
+    never
+}
 
 export interface SqlQueryDB {
-    query<const T extends ColumnType[]>(
+    query<const T extends QuerySchema>(
         sql: string,
-        columnTypes: T,
+        schema: T,
         params?: Param[]
-    ): Promise<{
-        [K in keyof T]: T[K] extends 'string' ? string :
-        T[K] extends 'number' ? number :
-        T[K] extends 'boolean' ? boolean : never
-    }[]>
+    ): Promise<SchemaToType<T>[]>
 }
 
 export interface SqlCommandDB {

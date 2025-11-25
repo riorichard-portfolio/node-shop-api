@@ -1,14 +1,42 @@
+import { UsecaseResult } from "../.shared.domain/types"
+
+export type LoginSuccess = {
+    token(): string
+}
+
+export type LoginFailed =
+    | { type: 'INVALID_EMAIL', email: string }
+    | { type: 'INVALID_PASSWORD' }
+
+export type RegisterFailed =
+    | { type: 'INVALID_EMAIL', email: string }
+    | { type: 'EMAIL_EXIST', email: string }
+
+export type RefreshTokenSuccess = {
+    newToken(): string
+}
+
+export type RefreshTokenFailed =
+    | { type: 'INVALID_SESSION', sessionId: string }
+    | { type: 'EXPIRED_SESSION', expiredAt: number }
+
+export interface LoginData {
+    email(): string
+    password(): string
+}
+
+export interface RegisterData {
+    email(): string
+    password(): string
+    fullName(): string
+}
+
+export interface RefreshTokenData {
+    oldToken(): string
+}
+
 export interface AuthUsecase {
-    /**
-    * @returns JWT token if login successful, null otherwise
-    */
-    login(email: string, password: string): Promise<string | null>
-    /**
-    * @returns [success status, detail message] - [true, "Registration successful"] or [false, "Error description"]
-    */
-    register(email: string, password: string, fullName: string): Promise<[boolean, string]>
-    /**
-    * @returns [newToken, detail] - [new JWT token if successful, operation detail message]
-    */
-    refreshToken(oldToken: string): Promise<[string | null, string]>
+    login(data: LoginData): Promise<UsecaseResult<LoginSuccess, LoginFailed>>
+    register(data: RegisterData): Promise<UsecaseResult<never, RegisterFailed>>
+    refreshToken(data: RefreshTokenData): Promise<UsecaseResult<RefreshTokenSuccess, RefreshTokenFailed>>
 }

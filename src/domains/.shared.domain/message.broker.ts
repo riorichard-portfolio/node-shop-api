@@ -1,7 +1,7 @@
 export type ConsumerHandler = (messages: string[]) => Promise<void> | void
 
 export interface MQProducer {
-    publish(messageValues: (string | number | boolean)[][], topic: string, ack?: boolean): Promise<void>;
+    publish<T>(messageValues: T[], topic: string, ack?: boolean): Promise<void>;
 }
 
 export interface MQConsumer {

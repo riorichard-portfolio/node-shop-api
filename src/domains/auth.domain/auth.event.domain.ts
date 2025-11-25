@@ -1,13 +1,13 @@
-export type SessionTuple = [
-    sessionId: string,
-    userId: string,
+export interface SessionToUpsert {
+    sessionId: string
+    userId: string
     expiredAt: number
-]
+}
 
 export interface AuthEventPublisher {
-    publishSessionCreated(...data: SessionTuple): Promise<void>
+    publishSessionCreated(data: SessionToUpsert): Promise<void>
 }
 
 export interface AuthEventCommandRepository {
-    bulkInsertSession(sessions: SessionTuple[]): Promise<void>
+    bulkUpsertSession(sessions: SessionToUpsert[]): Promise<void>
 }

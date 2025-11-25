@@ -1,5 +1,9 @@
+export type HashedString = {
+    value(): string
+}
+
 export interface BcryptHasher {
-    bcryptHash(stringData: string): Promise<string>
+    bcryptHash(stringData: string): Promise<HashedString>
 }
 
 export interface BcryptVerifier {

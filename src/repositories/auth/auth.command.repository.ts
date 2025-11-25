@@ -1,4 +1,4 @@
-import { AuthEventCommandRepository as AuthRepo, SessionTuple } from "../../domains/auth.domain/auth.event.domain";
+import { AuthEventCommandRepository as AuthRepo, SessionToUpsert } from "../../domains/auth.domain/auth.event.domain";
 
 import { SqlCommandDB } from "../../domains/.shared.domain/sql.db";
 
@@ -19,19 +19,14 @@ export default class AuthEventCommandRepository implements AuthRepo {
         this.sqlDb = sqlDb
     }
 
-    public async bulkInsertSession(sessions: SessionTuple[]): Promise<void> {
+    public async bulkUpsertSession(sessions: SessionToUpsert[]): Promise<void> {
         const sqlParams: Parameters<SqlCommandDB['command']>[1] = []
-        let valuesSql: string[] = []
-        let counter = 1
-        sessions.forEach(session => {
-            let eachValueSql: string[] = []
-            session.forEach(sessionParam => {
-                sqlParams.push(sessionParam)
-                eachValueSql.push(`$${counter++}`)
-            })
-            valuesSql.push("(" + eachValueSql.join(',') + ")")
+        let valuesSqlString: string = ''
+        sessions.forEach((session, index) => {
+            valuesSqlString += `($${index * 3 + 1},$${(index * 3) + 2},$${(index * 3) + 3}) ${index != sessions.length - 1 ? ',' : ''}`
+            sqlParams.push(session.sessionId, session.userId, session.expiredAt)
         })
-        const finalSql = bulkUpsertSessionSqlStart + valuesSql.join(',') + bulkUpsertSessionSqlEnd
+        const finalSql = bulkUpsertSessionSqlStart + valuesSqlString + bulkUpsertSessionSqlEnd
         await this.sqlDb.command(finalSql, sqlParams)
     }
 }

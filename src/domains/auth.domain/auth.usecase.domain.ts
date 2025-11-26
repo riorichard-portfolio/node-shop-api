@@ -1,7 +1,8 @@
 import { UsecaseResult } from "../.shared.domain/types"
 
 export type LoginSuccess = {
-    token(): string
+    accessToken(): string,
+    refreshToken(): string
 }
 
 export type LoginFailed =
@@ -9,7 +10,6 @@ export type LoginFailed =
     | { type: 'INVALID_PASSWORD' }
 
 export type RegisterFailed =
-    | { type: 'INVALID_EMAIL', email: string }
     | { type: 'EMAIL_EXIST', email: string }
 
 export type RefreshTokenSuccess = {
@@ -32,11 +32,11 @@ export interface RegisterData {
 }
 
 export interface RefreshTokenData {
-    oldToken(): string
+    sessionId(): string
 }
 
 export interface AuthUsecase {
     login(data: LoginData): Promise<UsecaseResult<LoginSuccess, LoginFailed>>
-    register(data: RegisterData): Promise<UsecaseResult<never, RegisterFailed>>
-    refreshToken(data: RefreshTokenData): Promise<UsecaseResult<RefreshTokenSuccess, RefreshTokenFailed>>
+    register(data: RegisterData): Promise<UsecaseResult<void, RegisterFailed>>
+    refreshAccessToken(data: RefreshTokenData): Promise<UsecaseResult<RefreshTokenSuccess, RefreshTokenFailed>>
 }

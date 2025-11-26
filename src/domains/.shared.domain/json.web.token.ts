@@ -14,13 +14,10 @@ export type JWTVerifiedResult =
         payload(): JWTPayload
     }
 
-export type GeneratedToken = {
-    value(): string
-}
 
 
 export interface JWTTokenGenerator {
-    generateJWT(payload: JWTPayload): GeneratedToken
+    generateJWT(payload: JWTPayload): string
 }
 
 export interface JWTTokenVerifier {

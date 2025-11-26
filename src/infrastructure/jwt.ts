@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken'
 
 import {
-    GeneratedToken,
     JWTTokenGenerator,
     JWTTokenVerifier,
     JWTVerifiedResult
@@ -21,16 +20,12 @@ export default class JWT implements JWTTokenGenerator, JWTTokenVerifier {
         this.expiredTimeSeconds = expiredTimeSeconds
     }
 
-    public generateJWT(payload: Record<string, string | number | boolean>): GeneratedToken {
+    public generateJWT(payload: Record<string, string | number | boolean>): string {
         const generatedToken = jwt.sign(
             { ...payload, expiredAt: Date.now() + this.expiredTimeSeconds * 1000 }, // * 1000 ms
             this.secretKey
         )
-        return {
-            value() {
-                return generatedToken
-            },
-        }
+        return generatedToken
     }
 
     public verifyJWT(token: string): JWTVerifiedResult {

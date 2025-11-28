@@ -1,32 +1,32 @@
 import crypto from 'crypto'
 
 import {
-    CreateNewUserData,
-    CreateNewUserFailed,
-    CreateNewUserOk,
-    FindUserByEmailData,
-    FindUserByEmailFailed,
-    FindUserByEmailOk,
-    UserService as UserSrvc
+    ICreateNewUserData,
+    TCreateNewUserFailed,
+    TCreateNewUserOk,
+    IFindUserByEmailData,
+    TFindUserByEmailFailed,
+    TFindUserByEmailOk,
+    IUserService
 } from "../domains/user.domain/user.service.domain";
 
-import { UserEventPublisher } from "../domains/user.domain/user.event.domain";
-import { UserQueryRepository } from "../domains/user.domain/user.repository.domain";
-import { ServiceResult } from "../domains/.shared.domain/types";
-import { BcryptHasher } from '../domains/.shared.domain/bcrypt';
+import { IUserEventPublisher } from "../domains/user.domain/user.event.domain";
+import { IUserQueryRepository } from "../domains/user.domain/user.repository.domain";
+import { TApplicationResults } from "../domains/.shared.domain/types";
+import { IBcryptHasher } from '../domains/.shared.domain/bcrypt';
 
-export default class UserService implements UserSrvc {
+export default class UserService implements IUserService {
     constructor(
-        private readonly publisher: UserEventPublisher,
-        private readonly repository: UserQueryRepository,
-        private readonly bcryptHasher: BcryptHasher
+        private readonly publisher: IUserEventPublisher,
+        private readonly repository: IUserQueryRepository,
+        private readonly bcryptHasher: IBcryptHasher
     ) { }
 
     private generateUserId(): string {
         return crypto.randomUUID()
     }
 
-    public async findUserByEmail(data: FindUserByEmailData): Promise<ServiceResult<FindUserByEmailOk, FindUserByEmailFailed>> {
+    public async findUserByEmail(data: IFindUserByEmailData): Promise<TApplicationResults<TFindUserByEmailOk, TFindUserByEmailFailed>> {
         const user = await this.repository.findByEmail(data)
         if (!user.found) {
             return {
@@ -50,7 +50,7 @@ export default class UserService implements UserSrvc {
         }
     }
 
-    public async createNewUser(data: CreateNewUserData): Promise<ServiceResult<CreateNewUserOk, CreateNewUserFailed>> {
+    public async createNewUser(data: ICreateNewUserData): Promise<ServiceResult<TCreateNewUserOk, TCreateNewUserFailed>> {
         const user = await this.repository.findByEmail(data)
         if (user.found) {
             return {

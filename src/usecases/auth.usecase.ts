@@ -1,33 +1,33 @@
 import crypto from 'crypto'
 
 import {
-    AuthUsecase as AuthUsc,
-    LoginData,
-    LoginFailed,
-    LoginSuccess,
-    RefreshTokenData,
-    RefreshTokenFailed,
-    RefreshTokenSuccess,
-    RegisterData,
-    RegisterFailed
+    IAuthUsecase ,
+    ILoginData,
+    TLoginFailed,
+    TLoginSuccess,
+    IRefreshTokenData,
+    TRefreshTokenFailed,
+    TRefreshTokenSuccess,
+    IRegisterData,
+    TRegisterFailed
 } from "../domains/auth.domain/auth.usecase.domain";
 
-import { AuthEventPublisher } from "../domains/auth.domain/auth.event.domain";
-import { AuthQueryRepository } from "../domains/auth.domain/auth.repository.domain";
-import { JWTTokenGenerator } from "../domains/.shared.domain/json.web.token";
-import { BcryptVerifier } from "../domains/.shared.domain/bcrypt";
-import { UsecaseResult } from "../domains/.shared.domain/types";
-import { UserService } from "../domains/user.domain/user.service.domain";
+import { IAuthEventPublisher } from "../domains/auth.domain/auth.event.domain";
+import { IAuthQueryRepository } from "../domains/auth.domain/auth.repository.domain";
+import { IJWTTokenGenerator } from "../domains/.shared.domain/json.web.token";
+import { IBcryptVerifier } from "../domains/.shared.domain/bcrypt";
+import { TApplicationResults } from "../domains/.shared.domain/types";
+import { IUserService } from "../domains/user.domain/user.service.domain";
 
-export default class AuthUsecase implements AuthUsc {
+export default class AuthUsecase implements IAuthUsecase {
     private readonly msPerDay = 24 * 60 * 60 * 1000;
     constructor(
-        private readonly publisher: AuthEventPublisher,
-        private readonly repository: AuthQueryRepository,
-        private readonly jwtAccessGenerator: JWTTokenGenerator,
-        private readonly jwtRefreshGenerator: JWTTokenGenerator,
-        private readonly bcryptVerifier: BcryptVerifier,
-        private readonly userService: UserService,
+        private readonly publisher: IAuthEventPublisher,
+        private readonly repository: IAuthQueryRepository,
+        private readonly jwtAccessGenerator: IJWTTokenGenerator,
+        private readonly jwtRefreshGenerator: IJWTTokenGenerator,
+        private readonly bcryptVerifier: IBcryptVerifier,
+        private readonly userService: IUserService,
         private readonly sessionExpiredDays: number
     ) { }
 
@@ -39,7 +39,7 @@ export default class AuthUsecase implements AuthUsc {
         return Date.now() + (this.sessionExpiredDays * this.msPerDay)
     }
 
-    public async register(data: RegisterData): Promise<UsecaseResult<void, RegisterFailed>> {
+    public async register(data: IRegisterData): Promise<TApplicationResults<void, TRegisterFailed>> {
         const createdUser = await this.userService.createNewUser(data)
         if (!createdUser.ok) {
             return {
@@ -56,7 +56,7 @@ export default class AuthUsecase implements AuthUsc {
         }
     }
 
-    public async login(data: LoginData): Promise<UsecaseResult<LoginSuccess, LoginFailed>> {
+    public async login(data: ILoginData): Promise<TApplicationResults<TLoginSuccess, TLoginFailed>> {
         const foundUser = await this.userService.findUserByEmail(data)
         if (!foundUser.ok) {
             return {
@@ -106,7 +106,7 @@ export default class AuthUsecase implements AuthUsc {
         }
     }
 
-    public async refreshAccessToken(data: RefreshTokenData): Promise<UsecaseResult<RefreshTokenSuccess, RefreshTokenFailed>> {
+    public async refreshAccessToken(data: IRefreshTokenData): Promise<TApplicationResults<TRefreshTokenSuccess, TRefreshTokenFailed>> {
         const session = await this.repository.findBySessionId(data)
         if (!session.found) {
             return {

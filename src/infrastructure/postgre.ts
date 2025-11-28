@@ -1,9 +1,15 @@
 import { Pool } from 'pg';
 
-import { Param, QuerySchema, SchemaToType, SqlCommandDB, SqlQueryDB } from '../domains/.shared.domain/sql.db'
+import {
+    TParam,
+    IQuerySchema,
+    TSchemaToType,
+    ISqlCommandDB,
+    ISqlQueryDB
+} from '../domains/.shared.domain/sql.db'
 import { TPostgreConfig } from '../config/config.instances/postgre.config';
 
-export default class PostgreDatabase implements SqlCommandDB, SqlQueryDB {
+export default class PostgreDatabase implements ISqlCommandDB, ISqlQueryDB {
     private readonly pool: Pool;
 
     constructor(config: TPostgreConfig) {
@@ -44,7 +50,7 @@ export default class PostgreDatabase implements SqlCommandDB, SqlQueryDB {
         }
     }
 
-    public async command(sql: string, params: Param[] = []): Promise<void> {
+    public async command(sql: string, params: TParam[] = []): Promise<void> {
         const client = await this.pool.connect();
         try {
             const doBlockSql = `
@@ -65,7 +71,7 @@ export default class PostgreDatabase implements SqlCommandDB, SqlQueryDB {
     }
 
 
-    public async query<const T extends QuerySchema>(sql: string, schema: T, params: Param[] = []): Promise<SchemaToType<T>[]> {
+    public async query<const T extends IQuerySchema>(sql: string, schema: T, params: TParam[] = []): Promise<TSchemaToType<T>[]> {
         const client = await this.pool.connect();
         try {
             const queryResult = await client.query({

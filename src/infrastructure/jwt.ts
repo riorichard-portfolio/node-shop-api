@@ -1,14 +1,14 @@
 import jwt from 'jsonwebtoken'
 
 import {
-    JWTTokenGenerator,
-    JWTTokenVerifier,
-    JWTVerifiedResult
+    IJWTTokenGenerator,
+    IJWTTokenVerifier,
+    TJWTVerifiedResult
 } from '../domains/.shared.domain/json.web.token'
 
 const jwtExpiredAtString = "expiredAt"
 
-export default class JWT implements JWTTokenGenerator, JWTTokenVerifier {
+export default class JWT implements IJWTTokenGenerator, IJWTTokenVerifier {
     private readonly secretKey: string
     private readonly expiredTimeSeconds: number
 
@@ -28,19 +28,16 @@ export default class JWT implements JWTTokenGenerator, JWTTokenVerifier {
         return generatedToken
     }
 
-    public verifyJWT(token: string): JWTVerifiedResult {
+    public verifyJWT(token: string): TJWTVerifiedResult {
         try {
             const payload = jwt.verify(token, this.secretKey)
             if (typeof payload === 'object') {
                 if (typeof payload[jwtExpiredAtString] === 'number') {
                     if (Date.now() < payload[jwtExpiredAtString]) {
-                        const { expiredAt, ...restPayload } = payload
                         return {
                             isExpired: false,
                             isInvalid: false,
-                            payload() {
-                                return restPayload
-                            }
+                            payload
                         }
                     } else {
                         return {

@@ -1,10 +1,10 @@
-import { RepositoryResult } from '../.shared.domain/types'
-import { UserEntity } from './user.entity'
+import { TRepositoryResults } from '../.shared.domain/types'
+import { IUserEntity } from './user.entity'
 
-export interface FindByEmailData {
+export interface IFindByEmailData {
     email(): string
 }
 
-export interface UserQueryRepository {
-    findByEmail(data: FindByEmailData): Promise<RepositoryResult<UserEntity>>
+export interface IUserQueryRepository {
+    findByEmail(data: IFindByEmailData): Promise<TRepositoryResults<IUserEntity>>
 }

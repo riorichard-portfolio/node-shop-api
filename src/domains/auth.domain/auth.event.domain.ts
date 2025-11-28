@@ -1,13 +1,13 @@
-export interface SessionToUpsert {
+export interface ISessionToUpsert {
     sessionId: string
     userId: string
     expiredAt: number
 }
 
-export interface AuthEventPublisher {
-    publishSessionCreated(data: SessionToUpsert): Promise<void>
+export interface IAuthEventPublisher {
+    publishSessionCreated(data: ISessionToUpsert): Promise<void>
 }
 
-export interface AuthEventCommandRepository {
-    bulkUpsertSession(sessions: SessionToUpsert[]): Promise<void>
+export interface IAuthEventCommandRepository {
+    bulkUpsertSession(sessions: ISessionToUpsert[]): Promise<void>
 }

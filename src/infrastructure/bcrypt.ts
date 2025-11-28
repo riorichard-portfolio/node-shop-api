@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt'
 
-import { BcryptHasher, BcryptVerifier } from '../domains/.shared.domain/bcrypt'
+import { IBcryptHasher, IBcryptVerifier } from '../domains/.shared.domain/bcrypt'
 
-export default class Bcrypt implements BcryptHasher, BcryptVerifier {
+export default class Bcrypt implements IBcryptHasher, IBcryptVerifier {
     private readonly hashRounds: number
     constructor(hashRounds: number) {
         this.hashRounds = hashRounds

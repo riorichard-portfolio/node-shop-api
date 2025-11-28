@@ -1,10 +1,10 @@
-export type ConsumerHandler = (messages: string[]) => Promise<void> | void
+export type TConsumerHandler = (messages: string[]) => Promise<void> | void
 
-export interface MQProducer {
+export interface IMQProducer {
     publish<T>(messageValues: T[], topic: string, ack?: boolean): Promise<void>;
 }
 
-export interface MQConsumer {
-    on(topic: string, handler: ConsumerHandler): this
+export interface IMQConsumer {
+    on(topic: string, handler: TConsumerHandler): this
     startConsumer(): Promise<void>
 }

@@ -1,9 +1,7 @@
-type MQTopics<T extends Record<string, string>> = T;
-
-export type AuthMQTopics = MQTopics<{
+export interface IAuthMQTopics {
     SESSION_CREATED: string
-}>
+}
 
-export type UserMQTopics = MQTopics<{
+export interface IUserMQTopics {
     USER_REGISTERED: string
-}>
+}

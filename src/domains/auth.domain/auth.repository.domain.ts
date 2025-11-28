@@ -1,10 +1,10 @@
-import { RepositoryResult } from '../.shared.domain/types'
-import { SessionEntity } from './session.entity'
+import { TRepositoryResults } from '../.shared.domain/types'
+import { ISessionEntity } from './session.entity'
 
-export interface FindBySessionIdData {
+export interface IFindBySessionIdData {
     sessionId(): string
 }
 
-export interface AuthQueryRepository {
-    findBySessionId(data: FindBySessionIdData): Promise<RepositoryResult<SessionEntity>>
+export interface IAuthQueryRepository {
+    findBySessionId(data: IFindBySessionIdData): Promise<TRepositoryResults<ISessionEntity>>
 }

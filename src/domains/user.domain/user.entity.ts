@@ -1,11 +1,11 @@
-export interface UserEntity {
+export interface IUserEntity {
     email(): string
     hashedPassword(): string
     fullname(): string
     userId(): string
 }
 
-export default class User implements UserEntity {
+export default class User implements IUserEntity {
     constructor(
         private readonly userEmail: string,
         private readonly userHashedPassword: string,

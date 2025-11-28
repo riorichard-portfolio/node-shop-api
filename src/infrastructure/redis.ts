@@ -1,11 +1,11 @@
 import { Redis } from "ioredis";
 
-import MemoryCache from '../domains/.shared.domain/memory.cache'
+import IMemoryCache from '../domains/.shared.domain/memory.cache'
 import { TRedisConfig } from "../config/config.instances/redis.config";
 
 const errorNotNumberIncrement = "invalid operation increment: incrementWithTTL does not return number"
 
-export default class RedisCache implements MemoryCache {
+export default class RedisCache implements IMemoryCache {
     private readonly redis: Redis
     private readonly incrementWithTTLScript = `
         local current = redis.call('INCR', KEYS[1])

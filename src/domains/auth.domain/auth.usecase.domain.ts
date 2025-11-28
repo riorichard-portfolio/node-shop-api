@@ -1,42 +1,42 @@
-import { UsecaseResult } from "../.shared.domain/types"
+import { TApplicationResults } from "../.shared.domain/types"
 
-export type LoginSuccess = {
+export type TLoginSuccess = {
     accessToken(): string,
     refreshToken(): string
 }
 
-export type LoginFailed =
+export type TLoginFailed =
     | { type: 'INVALID_EMAIL', email: string }
     | { type: 'INVALID_PASSWORD' }
 
-export type RegisterFailed =
+export type TRegisterFailed =
     | { type: 'EMAIL_EXIST', email: string }
 
-export type RefreshTokenSuccess = {
+export type TRefreshTokenSuccess = {
     newToken(): string
 }
 
-export type RefreshTokenFailed =
+export type TRefreshTokenFailed =
     | { type: 'INVALID_SESSION', sessionId: string }
     | { type: 'EXPIRED_SESSION', expiredAt: number }
 
-export interface LoginData {
+export interface ILoginData {
     email(): string
     password(): string
 }
 
-export interface RegisterData {
+export interface IRegisterData {
     email(): string
     password(): string
     fullName(): string
 }
 
-export interface RefreshTokenData {
+export interface IRefreshTokenData {
     sessionId(): string
 }
 
-export interface AuthUsecase {
-    login(data: LoginData): Promise<UsecaseResult<LoginSuccess, LoginFailed>>
-    register(data: RegisterData): Promise<UsecaseResult<void, RegisterFailed>>
-    refreshAccessToken(data: RefreshTokenData): Promise<UsecaseResult<RefreshTokenSuccess, RefreshTokenFailed>>
+export interface IAuthUsecase {
+    login(data: ILoginData): Promise<TApplicationResults<TLoginSuccess, TLoginFailed>>
+    register(data: IRegisterData): Promise<TApplicationResults<void, TRegisterFailed>>
+    refreshAccessToken(data: IRefreshTokenData): Promise<TApplicationResults<TRefreshTokenSuccess, TRefreshTokenFailed>>
 }

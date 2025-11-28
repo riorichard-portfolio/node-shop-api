@@ -1,13 +1,13 @@
 import { Kafka, Producer, Consumer } from "kafkajs";
 
-import { MQProducer, MQConsumer } from '../domains/.shared.domain/message.broker'
+import { IMQProducer, IMQConsumer } from '../domains/.shared.domain/message.broker'
 import { TKafkaConfig } from "../config/config.instances/kafka.config";
 
 const errorAlreadyStarted = 'invalid start operation: kafka already started'
 const errorNotStartedYet = 'invalid kafka operation: kafka not started yet'
 const errorAlreadyStopped = 'invalid stop operation: kafka already stopped'
 
-export default class KafkaMQ implements MQProducer, MQConsumer {
+export default class KafkaMQ implements IMQProducer, IMQConsumer {
     private readonly brokerNodes: string[]
     private readonly kafkaInstance: Kafka
     private readonly producer: Producer;

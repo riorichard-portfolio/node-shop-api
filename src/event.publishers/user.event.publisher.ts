@@ -1,21 +1,21 @@
-import { UserEventPublisher as UserPublisher, UserToCreate } from "../domains/user.domain/user.event.domain";
-import { UserMQTopics } from "../domains/.shared.domain/message.broker.topics";
+import { IUserEventPublisher , IUserToCreate } from "../domains/user.domain/user.event.domain";
+import { IUserMQTopics } from "../domains/.shared.domain/message.broker.topics";
 
-import { MQProducer } from "../domains/.shared.domain/message.broker";
+import { IMQProducer } from "../domains/.shared.domain/message.broker";
 
-export default class UserEventPublisher implements UserPublisher {
-    private readonly producer: MQProducer
-    private readonly topics: UserMQTopics
+export default class UserEventPublisher implements IUserEventPublisher {
+    private readonly producer: IMQProducer
+    private readonly topics: IUserMQTopics
 
     constructor(
-        producer: MQProducer,
-        topics: UserMQTopics
+        producer: IMQProducer,
+        topics: IUserMQTopics
     ) {
         this.producer = producer
         this.topics = topics
     }
 
-    public async publishUserRegistered(data: UserToCreate): Promise<void> {
+    public async publishUserRegistered(data: IUserToCreate): Promise<void> {
         await this.producer.publish(
             [data],
             this.topics.USER_REGISTERED

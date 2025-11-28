@@ -1,21 +1,21 @@
-import { AuthEventPublisher as AuthPublisher, SessionToUpsert } from "../domains/auth.domain/auth.event.domain";
-import { AuthMQTopics } from "../domains/.shared.domain/message.broker.topics";
+import { IAuthEventPublisher, ISessionToUpsert } from "../domains/auth.domain/auth.event.domain";
+import { IAuthMQTopics } from "../domains/.shared.domain/message.broker.topics";
 
-import { MQProducer } from "../domains/.shared.domain/message.broker";
+import { IMQProducer } from "../domains/.shared.domain/message.broker";
 
-export default class AuthEventPublisher implements AuthPublisher {
-    private readonly producer: MQProducer
-    private readonly topics: AuthMQTopics
+export default class AuthEventPublisher implements IAuthEventPublisher {
+    private readonly producer: IMQProducer
+    private readonly topics: IAuthMQTopics
 
     constructor(
-        producer: MQProducer,
-        topics: AuthMQTopics
+        producer: IMQProducer,
+        topics: IAuthMQTopics
     ) {
         this.producer = producer
         this.topics = topics
     }
 
-    public async publishSessionCreated(data: SessionToUpsert): Promise<void> {
+    public async publishSessionCreated(data: ISessionToUpsert): Promise<void> {
         await this.producer.publish(
             [data],
             this.topics.SESSION_CREATED,

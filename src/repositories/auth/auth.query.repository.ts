@@ -1,25 +1,25 @@
-import { AuthQueryRepository as AuthQueryRepo, FindBySessionIdData } from "../../domains/auth.domain/auth.repository.domain";
+import { IAuthQueryRepository , IFindBySessionIdData } from "../../domains/auth.domain/auth.repository.domain";
 
-import { QuerySchema, SqlQueryDB } from "../../domains/.shared.domain/sql.db";
-import { RepositoryResult } from "../../domains/.shared.domain/types";
-import Session, { SessionEntity } from "../../domains/auth.domain/session.entity";
+import { IQuerySchema, ISqlQueryDB } from "../../domains/.shared.domain/sql.db";
+import { TRepositoryResults } from "../../domains/.shared.domain/types";
+import Session, { ISessionEntity } from "../../domains/auth.domain/session.entity";
 
 const checkSessionSql = `select session_id as "sessionId" , user_id as "userId" , expired_at as "expiredAt" from sessions where session_id = $1`
 const sessionSchema = {
     sessionId: 'string',
     userId: 'string',
     expiredAt: 'number'
-} as const satisfies QuerySchema
+} as const satisfies IQuerySchema
 
-export default class AuthQueryRepository implements AuthQueryRepo {
-    private readonly sqlDb: SqlQueryDB
+export default class AuthQueryRepository implements IAuthQueryRepository {
+    private readonly sqlDb: ISqlQueryDB
     constructor(
-        sqlDb: SqlQueryDB,
+        sqlDb: ISqlQueryDB,
     ) {
         this.sqlDb = sqlDb
     }
 
-    public async findBySessionId(data: FindBySessionIdData): Promise<RepositoryResult<SessionEntity>> {
+    public async findBySessionId(data: IFindBySessionIdData): Promise<TRepositoryResults<ISessionEntity>> {
         const params = [data.sessionId()]
         const rows = await this.sqlDb.query(checkSessionSql, sessionSchema, params)
         const sessionFound = rows[0]

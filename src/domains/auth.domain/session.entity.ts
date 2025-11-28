@@ -1,11 +1,11 @@
-export interface SessionEntity {
+export interface ISessionEntity {
     sessionId(): string
     userId(): string
     expiredAt(): number
     isExpired(): boolean
 }
 
-export default class Session implements SessionEntity {
+export default class Session implements ISessionEntity {
     constructor(
         private readonly sessionSessionId: string,
         private readonly sessionUserId: string,

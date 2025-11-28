@@ -1,6 +1,6 @@
-import { AuthEventCommandRepository as AuthRepo, SessionToUpsert } from "../../domains/auth.domain/auth.event.domain";
+import { IAuthEventCommandRepository, ISessionToUpsert } from "../../domains/auth.domain/auth.event.domain";
 
-import { SqlCommandDB } from "../../domains/.shared.domain/sql.db";
+import { ISqlCommandDB } from "../../domains/.shared.domain/sql.db";
 
 const bulkUpsertSessionSqlStart = ` INSERT INTO sessions (session_id, user_id, expired_at) VALUES`
 const bulkUpsertSessionSqlEnd = `
@@ -11,16 +11,16 @@ DO UPDATE SET
     updated_at = NOW()
 `
 
-export default class AuthEventCommandRepository implements AuthRepo {
-    private readonly sqlDb: SqlCommandDB
+export default class AuthEventCommandRepository implements IAuthEventCommandRepository {
+    private readonly sqlDb: ISqlCommandDB
     constructor(
-        sqlDb: SqlCommandDB,
+        sqlDb: ISqlCommandDB,
     ) {
         this.sqlDb = sqlDb
     }
 
-    public async bulkUpsertSession(sessions: SessionToUpsert[]): Promise<void> {
-        const sqlParams: Parameters<SqlCommandDB['command']>[1] = []
+    public async bulkUpsertSession(sessions: ISessionToUpsert[]): Promise<void> {
+        const sqlParams: Parameters<ISqlCommandDB['command']>[1] = []
         let valuesSqlString: string = ''
         sessions.forEach((session, index) => {
             valuesSqlString += `($${index * 3 + 1},$${(index * 3) + 2},$${(index * 3) + 3}) ${index != sessions.length - 1 ? ',' : ''}`

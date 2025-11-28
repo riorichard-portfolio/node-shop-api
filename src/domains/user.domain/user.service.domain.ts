@@ -1,33 +1,33 @@
-import { ServiceResult } from '../.shared.domain/types'
+import { TApplicationResults } from '../.shared.domain/types'
 
-export type CreateNewUserOk = {
+export type TCreateNewUserOk = {
     userId(): string
 }
 
-export type CreateNewUserFailed =
+export type TCreateNewUserFailed =
     | { type: 'EMAIL_EXIST', email: string }
 
-export interface CreateNewUserData {
+export interface ICreateNewUserData {
     email(): string
     password(): string
     fullname(): string
 }
 
-export interface FindUserByEmailData {
+export interface IFindUserByEmailData {
     email(): string
 }
 
-export type FindUserByEmailOk = {
+export type TFindUserByEmailOk = {
     email(): string
     userId(): string
     fullname(): string
     hashedPassword(): string
 }
 
-export type FindUserByEmailFailed =
+export type TFindUserByEmailFailed =
     | { type: 'USER_NOT_EXIST', email: string }
 
-export interface UserService {
-    createNewUser(data: CreateNewUserData): Promise<ServiceResult<CreateNewUserOk, CreateNewUserFailed>>
-    findUserByEmail(data: FindUserByEmailData): Promise<ServiceResult<FindUserByEmailOk, FindUserByEmailFailed>>
+export interface IUserService {
+    createNewUser(data: ICreateNewUserData): Promise<TApplicationResults<TCreateNewUserOk, TCreateNewUserFailed>>
+    findUserByEmail(data: IFindUserByEmailData): Promise<TApplicationResults<TFindUserByEmailOk, TFindUserByEmailFailed>>
 }

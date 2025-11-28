@@ -1,11 +1,26 @@
-export type ServiceResult<T, F> =
-    | { ok: true; data(): T }
-    | { ok: false; failDetail: F }
+export interface ISuccessResult<ResultData> {
+    success(): true
+    data(): ResultData
+}
 
-export type UsecaseResult<T, F> =
-    | { success: true; data(): T }
-    | { success: false; failDetail: F }
+export interface IFailedResult<FailedDetails> {
+    success(): false
+    failDetails(): FailedDetails
+}
 
-export type RepositoryResult<T> =
-    | { found: true; data(): T }
-    | { found: false }
+export type TApplicationResults<ResultData, FailedDetails> =
+    | ISuccessResult<ResultData>
+    | IFailedResult<FailedDetails>
+
+export interface IFoundRepositoryData<RepositoryData> {
+    found(): true
+    data(): RepositoryData
+}
+
+export interface INotFoundRepositoryData {
+    found(): false
+}
+
+export type TRepositoryResults<RepositoryData> =
+    | IFoundRepositoryData<RepositoryData>
+    | INotFoundRepositoryData

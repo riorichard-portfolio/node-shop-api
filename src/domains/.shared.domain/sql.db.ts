@@ -1,9 +1,9 @@
-export type Param = string | number | boolean
-export interface QuerySchema {
+export type TParam = string | number | boolean
+export interface IQuerySchema {
     [key: string]: 'string' | 'number' | 'boolean' 
 }
 
-export type SchemaToType<T extends QuerySchema> = {
+export type TSchemaToType<T extends IQuerySchema> = {
     [K in keyof T]:
     T[K] extends 'string' ? string :
     T[K] extends 'number' ? number :
@@ -11,14 +11,14 @@ export type SchemaToType<T extends QuerySchema> = {
     never
 }
 
-export interface SqlQueryDB {
-    query<const T extends QuerySchema>(
+export interface ISqlQueryDB {
+    query<const T extends IQuerySchema>(
         sql: string,
         schema: T,
-        params?: Param[]
-    ): Promise<SchemaToType<T>[]>
+        params?: TParam[]
+    ): Promise<TSchemaToType<T>[]>
 }
 
-export interface SqlCommandDB {
-    command(sql: string, params?: Param[]): Promise<void>
+export interface ISqlCommandDB {
+    command(sql: string, params?: TParam[]): Promise<void>
 }

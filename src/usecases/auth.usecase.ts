@@ -1,34 +1,43 @@
 import crypto from 'crypto'
 
 import {
-    IAuthUsecase ,
-    ILoginData,
-    TLoginFailed,
-    TLoginSuccess,
-    IRefreshTokenData,
-    TRefreshTokenFailed,
-    TRefreshTokenSuccess,
-    IRegisterData,
-    TRegisterFailed
+    IAuthUsecase,
 } from "../domains/auth.domain/auth.usecase.domain";
+import {
+    ILoginInputDTO,
+    IRefreshTokenInputDTO,
+    IRegisterInputDTO
+} from '../domains/auth.domain/auth.input.dto';
+import {
+    ILoginOutputDTO,
+    IRefreshTokenOutputDTO,
+    TLoginFailedType,
+    TRefreshTokenFailedType,
+    TRegisterFailedType
+} from '../domains/auth.domain/auth.output.dto';
 
 import { IAuthEventPublisher } from "../domains/auth.domain/auth.event.domain";
 import { IAuthQueryRepository } from "../domains/auth.domain/auth.repository.domain";
-import { IJWTTokenGenerator } from "../domains/.shared.domain/json.web.token";
 import { IBcryptVerifier } from "../domains/.shared.domain/bcrypt";
 import { TApplicationResults } from "../domains/.shared.domain/types";
 import { IUserService } from "../domains/user.domain/user.service.domain";
+import { IApplicationResultFactory } from '../domains/.shared.domain/result.factory';
+import { IAuthOutputDTOFactory } from '../domains/auth.domain/auth.factories';
+import { IAuthTokenCreator } from '../domains/auth.domain/auth.token.management';
 
 export default class AuthUsecase implements IAuthUsecase {
     private readonly msPerDay = 24 * 60 * 60 * 1000;
     constructor(
+        // outside auth domains
+        private readonly resultFactory: IApplicationResultFactory,
+        private readonly userService: IUserService,
+        private readonly sessionExpiredDays: number,
+        private readonly bcryptVerifier: IBcryptVerifier,
+
         private readonly publisher: IAuthEventPublisher,
         private readonly repository: IAuthQueryRepository,
-        private readonly jwtAccessGenerator: IJWTTokenGenerator,
-        private readonly jwtRefreshGenerator: IJWTTokenGenerator,
-        private readonly bcryptVerifier: IBcryptVerifier,
-        private readonly userService: IUserService,
-        private readonly sessionExpiredDays: number
+        private readonly tokenCreator: IAuthTokenCreator,
+        private readonly OutputDTOFactory: IAuthOutputDTOFactory
     ) { }
 
     private generateSessionId(): string {
@@ -39,105 +48,50 @@ export default class AuthUsecase implements IAuthUsecase {
         return Date.now() + (this.sessionExpiredDays * this.msPerDay)
     }
 
-    public async register(data: IRegisterData): Promise<TApplicationResults<void, TRegisterFailed>> {
+    public async register(data: IRegisterInputDTO): Promise<TApplicationResults<{}, TRegisterFailedType>> {
         const createdUser = await this.userService.createNewUser(data)
-        if (!createdUser.ok) {
-            return {
-                success: false,
-                failDetail: {
-                    type: 'EMAIL_EXIST',
-                    email: data.email()
-                }
-            }
+        if (!createdUser.success) {
+            return createdUser // failed in userservice created user , same failed result dto , return instead
         }
-        return {
-            success: true,
-            data() { },
-        }
+        return this.resultFactory.createSuccessResult({})
     }
 
-    public async login(data: ILoginData): Promise<TApplicationResults<TLoginSuccess, TLoginFailed>> {
+    public async login(data: ILoginInputDTO): Promise<TApplicationResults<ILoginOutputDTO, TLoginFailedType>> {
         const foundUser = await this.userService.findUserByEmail(data)
-        if (!foundUser.ok) {
-            return {
-                success: false,
-                failDetail: {
-                    email: data.email(),
-                    type: 'INVALID_EMAIL'
-                }
-            }
+        if (!foundUser.success) {
+            return this.resultFactory.createFailedResult('INVALID_EMAIL')
         }
         const verfiedSuccess = await this.bcryptVerifier.bcryptVerify(
             data.password(),
             foundUser.data().hashedPassword()
         )
         if (!verfiedSuccess) {
-            return {
-                success: false,
-                failDetail: {
-                    type: 'INVALID_PASSWORD'
-                }
-            }
+            return this.resultFactory.createFailedResult('INVALID_PASSWORD')
         }
-        const newAccessToken = this.jwtAccessGenerator.generateJWT({
-            userId: foundUser.data().userId(),
-        })
+        const newAccessToken = this.tokenCreator.createAccessToken(foundUser.data().userId())
         const newSessionId = this.generateSessionId()
-        const newRefreshToken = this.jwtRefreshGenerator.generateJWT({
-            sessionId: newSessionId,
-        })
         await this.publisher.publishSessionCreated({
             userId: foundUser.data().userId(),
             sessionId: newSessionId,
             expiredAt: this.generateExpiredAt()
         })
-        return {
-            success: true,
-            data() {
-                return {
-                    accessToken() {
-                        return newAccessToken
-                    },
-                    refreshToken() {
-                        return newRefreshToken
-                    },
-                }
-            },
-        }
+        const newRefreshToken = this.tokenCreator.createRefreshToken(newSessionId)
+        return this.resultFactory.createSuccessResult(
+            this.OutputDTOFactory.createLoginOutputDTO(newAccessToken, newRefreshToken)
+        )
     }
 
-    public async refreshAccessToken(data: IRefreshTokenData): Promise<TApplicationResults<TRefreshTokenSuccess, TRefreshTokenFailed>> {
+    public async refreshAccessToken(data: IRefreshTokenInputDTO): Promise<TApplicationResults<IRefreshTokenOutputDTO, TRefreshTokenFailedType>> {
         const session = await this.repository.findBySessionId(data)
         if (!session.found) {
-            return {
-                success: false,
-                failDetail: {
-                    type: 'INVALID_SESSION',
-                    sessionId: data.sessionId()
-                }
-            }
+            return this.resultFactory.createFailedResult('INVALID_SESSION')
         }
         if (session.data().isExpired()) {
-            return {
-                success: false,
-                failDetail: {
-                    type: 'EXPIRED_SESSION',
-                    expiredAt: session.data().expiredAt()
-                }
-            }
+            return this.resultFactory.createFailedResult('EXPIRED_SESSION')
         }
-        const newAccessToken = this.jwtAccessGenerator.generateJWT({
-            userId: session.data().userId(),
-        })
-        return {
-            success: true,
-            data() {
-                return {
-                    newToken() {
-                        return newAccessToken
-                    },
-                }
-            },
-        }
+        const newAccessToken = this.tokenCreator.createAccessToken(session.data().userId())
+        return this.resultFactory.createSuccessResult(
+            this.OutputDTOFactory.createRefreshAccessTokenOutputDTO(newAccessToken)
+        )
     }
 }

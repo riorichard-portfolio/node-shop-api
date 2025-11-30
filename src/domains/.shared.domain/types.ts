@@ -1,24 +1,24 @@
 export interface ISuccessResult<ResultData> {
-    success(): true
+    success: true
     data(): ResultData
 }
 
-export interface IFailedResult<FailedDetails> {
-    success(): false
-    failDetails(): FailedDetails
+export interface IFailedResult<FailedType> {
+    success: false
+    failedType(): FailedType
 }
 
-export type TApplicationResults<ResultData, FailedDetails> =
+export type TApplicationResults<ResultData, FailedType> =
     | ISuccessResult<ResultData>
-    | IFailedResult<FailedDetails>
+    | IFailedResult<FailedType>
 
 export interface IFoundRepositoryData<RepositoryData> {
-    found(): true
+    found: true
     data(): RepositoryData
 }
 
 export interface INotFoundRepositoryData {
-    found(): false
+    found: false
 }
 
 export type TRepositoryResults<RepositoryData> =

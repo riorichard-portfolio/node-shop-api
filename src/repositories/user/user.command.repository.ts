@@ -14,7 +14,7 @@ export default class UserEventCommandRepository implements IUserEventCommandRepo
         let valuesSqlString: string = ''
         users.forEach((user, index) => {
             valuesSqlString += `($${index * 4 + 1},$${(index * 4) + 2},$${(index * 4) + 3},$${(index * 4) + 4}) ${index != users.length - 1 ? ',' : ''}`
-            sqlParams.push(user.userId, user.email, user.fullName, user.hashedPassword)
+            sqlParams.push(user.userId, user.email, user.fullname, user.hashedPassword)
         })
         const finalSql = bulkInsertUserSql + valuesSqlString
         await this.sqlDb.command(finalSql, sqlParams)

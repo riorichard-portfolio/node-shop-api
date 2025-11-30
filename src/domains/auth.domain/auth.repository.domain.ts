@@ -1,5 +1,5 @@
 import { TRepositoryResults } from '../.shared.domain/types'
-import { ISessionEntity } from './session.entity'
+import { ISessionEntity } from './auth.entities'
 
 export interface IFindBySessionIdData {
     sessionId(): string

@@ -1,5 +1,5 @@
 import { TRepositoryResults } from '../.shared.domain/types'
-import { IUserEntity } from './user.entity'
+import { IUserEntity } from './user.entities'
 
 export interface IFindByEmailData {
     email(): string

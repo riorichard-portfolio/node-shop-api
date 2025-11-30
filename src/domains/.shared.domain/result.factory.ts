@@ -12,5 +12,5 @@ export interface IRepositoryResultFactory {
 
 export interface IApplicationResultFactory {
     createSuccessResult<ResultData>(resultData: ResultData): ISuccessResult<ResultData>
-    createFailedResult<FailedDetails>(failedDetails: FailedDetails): IFailedResult<FailedDetails>
+    createFailedResult<FailedType>(failedType: FailedType): IFailedResult<FailedType>
 }

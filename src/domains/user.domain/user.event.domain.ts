@@ -2,7 +2,7 @@ export interface IUserToCreate {
     userId: string
     email: string
     hashedPassword: string
-    fullName: string
+    fullname: string
 }
 
 export interface IUserEventPublisher {

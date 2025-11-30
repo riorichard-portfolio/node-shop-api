@@ -1,6 +1,6 @@
 import { Redis } from "ioredis";
 
-import IMemoryCache from '../domains/.shared.domain/memory.cache'
+import IMemoryCache from '../.domains/.shared.domain/memory.cache'
 import { TRedisConfig } from "../config/config.instances/redis.config";
 
 const errorNotNumberIncrement = "invalid operation increment: incrementWithTTL does not return number"

@@ -1,6 +1,6 @@
-import { IAuthEventCommandRepository, ISessionToUpsert } from "../../domains/auth.domain/auth.event.domain";
+import { IAuthEventCommandRepository, ISessionToUpsert } from "../../.domains/auth.domain/auth.event.domain";
 
-import { ISqlCommandDB } from "../../domains/.shared.domain/sql.db";
+import { ISqlCommandDB } from "../../.domains/.shared.domain/sql.db";
 
 const bulkUpsertSessionSqlStart = ` INSERT INTO sessions (session_id, user_id, expired_at) VALUES`
 const bulkUpsertSessionSqlEnd = `

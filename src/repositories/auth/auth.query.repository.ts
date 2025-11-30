@@ -1,10 +1,10 @@
-import { IAuthQueryRepository, IFindBySessionIdData } from "../../domains/auth.domain/auth.repository.domain";
-import { IRepositoryResultFactory } from "../../domains/.shared.domain/result.factory";
+import { IAuthQueryRepository, IFindBySessionIdData } from "../../.domains/auth.domain/auth.repository.domain";
+import { IRepositoryResultFactory } from "../../.domains/.shared.domain/result.factory";
 
-import { IQuerySchema, ISqlQueryDB } from "../../domains/.shared.domain/sql.db";
-import { TRepositoryResults } from "../../domains/.shared.domain/types";
-import { ISessionEntity } from "../../domains/auth.domain/auth.entities";
-import { IAuthEntitiesFactory } from "src/domains/auth.domain/auth.factories";
+import { IQuerySchema, ISqlQueryDB } from "../../.domains/.shared.domain/sql.db";
+import { TRepositoryResults } from "../../.domains/.shared.domain/types";
+import { ISessionEntity } from "../../.domains/auth.domain/auth.entities";
+import { IAuthEntitiesFactory } from "src/.domains/auth.domain/auth.factories";
 
 const checkSessionSql = `select session_id as "sessionId" , user_id as "userId" , expired_at as "expiredAt" from sessions where session_id = $1`
 const sessionSchema = {

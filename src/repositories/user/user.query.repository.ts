@@ -1,10 +1,10 @@
-import { IFindByEmailData, IUserQueryRepository } from "../../domains/user.domain/user.repository.domain";
-import { IRepositoryResultFactory } from "../../domains/.shared.domain/result.factory";
+import { IFindByEmailData, IUserQueryRepository } from "../../.domains/user.domain/user.repository.domain";
+import { IRepositoryResultFactory } from "../../.domains/.shared.domain/result.factory";
 
-import { IQuerySchema, ISqlQueryDB } from "../../domains/.shared.domain/sql.db";
-import { TRepositoryResults } from "../../domains/.shared.domain/types";
-import { IUserEntity } from "../../domains/user.domain/user.entities";
-import { IUserEntitiesFactory } from "src/domains/user.domain/user.factories";
+import { IQuerySchema, ISqlQueryDB } from "../../.domains/.shared.domain/sql.db";
+import { TRepositoryResults } from "../../.domains/.shared.domain/types";
+import { IUserEntity } from "../../.domains/user.domain/user.entities";
+import { IUserEntitiesFactory } from "src/.domains/user.domain/user.factories";
 
 const userFindByEmailSchema = {
     userId: 'string',

@@ -1,11 +1,11 @@
 import {
     ILoginOutputDTO,
     IRefreshTokenOutputDTO
-} from "../../domains/auth.domain/auth.output.dto"
+} from "../../.domains/auth.domain/auth.output.dto"
 
 import {
     IAuthOutputDTOFactory
-} from "../../domains/auth.domain/auth.factories"
+} from "../../.domains/auth.domain/auth.factories"
 
 class LoginOutputDTO implements ILoginOutputDTO {
     constructor(

@@ -6,7 +6,7 @@ import {
     TSchemaToType,
     ISqlCommandDB,
     ISqlQueryDB
-} from '../domains/.shared.domain/sql.db'
+} from '../.domains/.shared.domain/sql.db'
 import { TPostgreConfig } from '../config/config.instances/postgre.config';
 
 export default class PostgreDatabase implements ISqlCommandDB, ISqlQueryDB {

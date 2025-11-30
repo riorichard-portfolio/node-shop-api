@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 
-import { IBcryptHasher, IBcryptVerifier } from '../domains/.shared.domain/bcrypt'
+import { IBcryptHasher, IBcryptVerifier } from '../.domains/.shared.domain/bcrypt'
 
 export default class Bcrypt implements IBcryptHasher, IBcryptVerifier {
     private readonly hashRounds: number

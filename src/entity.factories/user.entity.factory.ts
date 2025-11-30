@@ -1,5 +1,5 @@
-import { IUserEntity } from "../domains/user.domain/user.entities"
-import { IUserEntitiesFactory } from "../domains/user.domain/user.factories"
+import { IUserEntity } from "../.domains/user.domain/user.entities"
+import { IUserEntitiesFactory } from "../.domains/user.domain/user.factories"
 
 class User implements IUserEntity {
     constructor(

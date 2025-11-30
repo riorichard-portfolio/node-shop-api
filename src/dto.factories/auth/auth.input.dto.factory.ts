@@ -2,11 +2,11 @@ import {
     ILoginInputDTO,
     IRefreshTokenInputDTO,
     IRegisterInputDTO
-} from "../../domains/auth.domain/auth.input.dto";
+} from "../../.domains/auth.domain/auth.input.dto";
 
 import {
     IAuthInputDTOFactory
-} from "../../domains/auth.domain/auth.factories"
+} from "../../.domains/auth.domain/auth.factories"
 
 class LoginInputDTO implements ILoginInputDTO {
     constructor(

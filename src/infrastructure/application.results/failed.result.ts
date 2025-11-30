@@ -1,4 +1,4 @@
-import { IFailedResult } from "../../domains/.shared.domain/types";
+import { IFailedResult } from "../../.domains/.shared.domain/types";
 
 export default class FailedResult<FailedType> implements IFailedResult<FailedType> {
     public readonly success = false

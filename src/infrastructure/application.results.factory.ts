@@ -1,5 +1,5 @@
-import { IApplicationResultFactory } from "../domains/.shared.domain/result.factory";
-import { ISuccessResult, IFailedResult } from "../domains/.shared.domain/types";
+import { IApplicationResultFactory } from "../.domains/.shared.domain/result.factory";
+import { ISuccessResult, IFailedResult } from "../.domains/.shared.domain/types";
 import SuccessResult from "./application.results/success.result";
 import FailedResult from "./application.results/failed.result";
 

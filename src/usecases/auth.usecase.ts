@@ -2,28 +2,28 @@ import crypto from 'crypto'
 
 import {
     IAuthUsecase,
-} from "../domains/auth.domain/auth.usecase.domain";
+} from "../.domains/auth.domain/auth.usecase.domain";
 import {
     ILoginInputDTO,
     IRefreshTokenInputDTO,
     IRegisterInputDTO
-} from '../domains/auth.domain/auth.input.dto';
+} from '../.domains/auth.domain/auth.input.dto';
 import {
     ILoginOutputDTO,
     IRefreshTokenOutputDTO,
     TLoginFailedType,
     TRefreshTokenFailedType,
     TRegisterFailedType
-} from '../domains/auth.domain/auth.output.dto';
+} from '../.domains/auth.domain/auth.output.dto';
 
-import { IAuthEventPublisher } from "../domains/auth.domain/auth.event.domain";
-import { IAuthQueryRepository } from "../domains/auth.domain/auth.repository.domain";
-import { IBcryptVerifier } from "../domains/.shared.domain/bcrypt";
-import { TApplicationResults } from "../domains/.shared.domain/types";
-import { IUserService } from "../domains/user.domain/user.service.domain";
-import { IApplicationResultFactory } from '../domains/.shared.domain/result.factory';
-import { IAuthOutputDTOFactory } from '../domains/auth.domain/auth.factories';
-import { IAuthTokenCreator } from '../domains/auth.domain/auth.token.management';
+import { IAuthEventPublisher } from "../.domains/auth.domain/auth.event.domain";
+import { IAuthQueryRepository } from "../.domains/auth.domain/auth.repository.domain";
+import { IBcryptVerifier } from "../.domains/.shared.domain/bcrypt";
+import { TApplicationResults } from "../.domains/.shared.domain/types";
+import { IUserService } from "../.domains/user.domain/user.service.domain";
+import { IApplicationResultFactory } from '../.domains/.shared.domain/result.factory';
+import { IAuthOutputDTOFactory } from '../.domains/auth.domain/auth.factories';
+import { IAuthTokenCreator } from '../.domains/auth.domain/auth.token.management';
 
 export default class AuthUsecase implements IAuthUsecase {
     private readonly msPerDay = 24 * 60 * 60 * 1000;

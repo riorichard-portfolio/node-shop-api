@@ -1,7 +1,7 @@
-import { IAuthEventPublisher, ISessionToUpsert } from "../domains/auth.domain/auth.event.domain";
-import { IAuthMQTopics } from "../domains/.shared.domain/message.broker.topics";
+import { IAuthEventPublisher, ISessionToUpsert } from "../.domains/auth.domain/auth.event.domain";
+import { IAuthMQTopics } from "../.domains/.shared.domain/message.broker.topics";
 
-import { IMQProducer } from "../domains/.shared.domain/message.broker";
+import { IMQProducer } from "../.domains/.shared.domain/message.broker";
 
 export default class AuthEventPublisher implements IAuthEventPublisher {
     private readonly producer: IMQProducer

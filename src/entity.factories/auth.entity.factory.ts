@@ -1,5 +1,5 @@
-import { ISessionEntity } from "../domains/auth.domain/auth.entities";
-import { IAuthEntitiesFactory } from "../domains/auth.domain/auth.factories";
+import { ISessionEntity } from "../.domains/auth.domain/auth.entities";
+import { IAuthEntitiesFactory } from "../.domains/auth.domain/auth.factories";
 
 class Session implements ISessionEntity {
     constructor(

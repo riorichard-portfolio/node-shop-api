@@ -1,6 +1,6 @@
 import { Kafka, Producer, Consumer } from "kafkajs";
 
-import { IMQProducer, IMQConsumer } from '../domains/.shared.domain/message.broker'
+import { IMQProducer, IMQConsumer } from '../.domains/.shared.domain/message.broker'
 import { TKafkaConfig } from "../config/config.instances/kafka.config";
 
 const errorAlreadyStarted = 'invalid start operation: kafka already started'

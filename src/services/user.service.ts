@@ -2,30 +2,31 @@ import crypto from 'crypto'
 
 import {
     IUserService
-} from "../domains/user.domain/user.service.domain";
-import { IApplicationResultFactory } from 'src/domains/.shared.domain/result.factory';
+} from "../.domains/user.domain/user.service.domain";
+import { IApplicationResultFactory } from 'src/.domains/.shared.domain/result.factory';
 import {
     ICreateNewUserInputDTO,
     IFindUserByEmailInputDTO
-} from 'src/domains/user.domain/user.input.dto';
+} from 'src/.domains/user.domain/user.input.dto';
 import {
     IFindUserByEmailOutputDTO,
     TCreateNewUserFailedType,
     TFindUserByEmailFailedType
-} from 'src/domains/user.domain/user.output.dto';
+} from 'src/.domains/user.domain/user.output.dto';
 
-import { IUserEventPublisher } from "../domains/user.domain/user.event.domain";
-import { IUserQueryRepository } from "../domains/user.domain/user.repository.domain";
-import { TApplicationResults } from "../domains/.shared.domain/types";
-import { IBcryptHasher } from '../domains/.shared.domain/bcrypt';
+import { IUserEventPublisher } from "../.domains/user.domain/user.event.domain";
+import { IUserQueryRepository } from "../.domains/user.domain/user.repository.domain";
+import { TApplicationResults } from "../.domains/.shared.domain/types";
+import { IBcryptHasher } from '../.domains/.shared.domain/bcrypt';
 
 
 export default class UserService implements IUserService {
     constructor(
-        private readonly publisher: IUserEventPublisher,
-        private readonly repository: IUserQueryRepository,
         private readonly bcryptHasher: IBcryptHasher,
-        private readonly resultFactory: IApplicationResultFactory
+        private readonly resultFactory: IApplicationResultFactory,
+
+        private readonly publisher: IUserEventPublisher,
+        private readonly repository: IUserQueryRepository
     ) { }
 
     private generateUserId(): string {

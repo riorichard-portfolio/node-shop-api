@@ -1,6 +1,6 @@
-import { IUserEventCommandRepository , IUserToCreate } from "../../domains/user.domain/user.event.domain";
+import { IUserEventCommandRepository , IUserToCreate } from "../../.domains/user.domain/user.event.domain";
 
-import { ISqlCommandDB } from "../../domains/.shared.domain/sql.db";
+import { ISqlCommandDB } from "../../.domains/.shared.domain/sql.db";
 
 const bulkInsertUserSql = `insert into users (user_id, email,fullname, hashed_password) values`
 

@@ -1,44 +1,47 @@
-import { Config } from '../../.core.internal.framework/internal.framework'
+import { IPostgreConfig } from "../../.domains/.shared.domain/config"
+import Config from "./.base.config"
 
-type PostgreStringKeys =
-    | "PG_HOST"
-    | "PG_USER"
-    | "PG_PASSWORD"
-    | "PG_DATABASE"
+export default class PostgreConfig extends Config implements IPostgreConfig {
+    private readonly hostValue: string
+    private readonly usernameValue: string
+    private readonly databaseNameValue: string
+    private readonly passwordValue: string
+    private readonly portValue: number
+    private readonly maxPoolValue: number
+    constructor(
+        host: unknown,
+        username: unknown,
+        databaseName: unknown,
+        password: unknown,
+        port: unknown,
+        maxPool: unknown
+    ) {
+        super()
 
-type PostgreNumberKeys =
-    | "PG_PORT"
-    | "PG_MAX_POOL"
-
-
-const postgreKeys: (PostgreStringKeys | PostgreNumberKeys)[] = [
-    "PG_HOST",
-    "PG_USER",
-    "PG_PASSWORD",
-    "PG_DATABASE",
-    "PG_PORT",
-    "PG_MAX_POOL"
-]
-
-export type TPostgreConfig = {
-    [K in PostgreStringKeys | PostgreNumberKeys]:
-    K extends PostgreNumberKeys ? number : string
-}
-
-
-export default class PostgreConfig extends Config<PostgreStringKeys, PostgreNumberKeys, never> {
-    constructor(pgCfgName: string) {
-        super(pgCfgName, postgreKeys)
+        this.hostValue = this.safelyGetString(host)
+        this.usernameValue = this.safelyGetString(username)
+        this.databaseNameValue = this.safelyGetString(databaseName)
+        this.passwordValue = this.safelyGetString(password)
+        this.portValue = this.safelyGetNumber(port)
+        this.maxPoolValue = this.safelyGetNumber(maxPool)
+    }
+    public host(): string {
+        return this.hostValue
+    }
+    public username(): string {
+        return this.usernameValue
+    }
+    public databaseName(): string {
+        return this.databaseNameValue
+    }
+    public password(): string {
+        return this.passwordValue
+    }
+    public port(): number {
+        return this.portValue
     }
 
-    public getAllVars(): TPostgreConfig {
-        return {
-            PG_HOST: this.GET_CONFIG_STRING("PG_HOST"),
-            PG_USER: this.GET_CONFIG_STRING("PG_USER"),
-            PG_PASSWORD: this.GET_CONFIG_STRING("PG_PASSWORD"),
-            PG_DATABASE: this.GET_CONFIG_STRING("PG_DATABASE"),
-            PG_PORT: this.GET_CONFIG_NUMBER("PG_PORT"),
-            PG_MAX_POOL: this.GET_CONFIG_NUMBER("PG_MAX_POOL")
-        }
+    public maxPool(): number {
+        return this.maxPoolValue
     }
 }

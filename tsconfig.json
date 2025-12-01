@@ -41,9 +41,6 @@
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true
     },
-    "include": [
-        "src/**/*"
-, "src/.domains"    ],
     "exclude": [
         "node_modules",
         "dist",

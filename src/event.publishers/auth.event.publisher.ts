@@ -18,7 +18,7 @@ export default class AuthEventPublisher implements IAuthEventPublisher {
     public async publishSessionCreated(data: ISessionToUpsert): Promise<void> {
         await this.producer.publish(
             [data],
-            this.topics.SESSION_CREATED,
+            this.topics.sessionCreatedTopic(),
             false
         )
     }

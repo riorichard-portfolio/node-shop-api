@@ -1,7 +1,7 @@
 import { Redis } from "ioredis";
 
 import IMemoryCache from '../.domains/.shared.domain/memory.cache'
-import { TRedisConfig } from "../config/config.instances/redis.config";
+import { IRedisConfig } from "../.domains/.shared.domain/config";
 
 const errorNotNumberIncrement = "invalid operation increment: incrementWithTTL does not return number"
 
@@ -15,10 +15,10 @@ export default class RedisCache implements IMemoryCache {
         return current
         `;
 
-    constructor(config: TRedisConfig) {
+    constructor(config: IRedisConfig) {
         const newRedis = new Redis({
-            host: config.REDIS_HOST,
-            port: config.REDIS_PORT
+            host: config.host(),
+            port: config.port()
         })
         this.redis = newRedis
         this.setupEventListeners()

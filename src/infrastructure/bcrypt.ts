@@ -1,15 +1,15 @@
 import bcrypt from 'bcrypt'
 
 import { IBcryptHasher, IBcryptVerifier } from '../.domains/.shared.domain/bcrypt'
+import { IBcryptConfig } from '../.domains/.shared.domain/config'
 
 export default class Bcrypt implements IBcryptHasher, IBcryptVerifier {
-    private readonly hashRounds: number
-    constructor(hashRounds: number) {
-        this.hashRounds = hashRounds
-    }
+    constructor(
+        private readonly config: IBcryptConfig
+    ) { }
 
     public async bcryptHash(stringData: string): Promise<string> {
-        const hashedString = await bcrypt.hash(stringData, this.hashRounds)
+        const hashedString = await bcrypt.hash(stringData, this.config.saltRounds())
         return hashedString
     }
 

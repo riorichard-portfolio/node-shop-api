@@ -1,30 +1,21 @@
-import { Config } from '../../.core.internal.framework/internal.framework'
+import { IRedisConfig } from "../../.domains/.shared.domain/config"
+import Config from "./.base.config"
 
-type RedisStringKeys =
-    | "REDIS_HOST"
-
-type RedisNumberKeys =
-    | "REDIS_PORT"
-
-const redisKeys: (RedisStringKeys | RedisNumberKeys)[] = [
-    "REDIS_HOST",
-    "REDIS_PORT"
-]
-
-export type TRedisConfig = {
-    [K in RedisStringKeys | RedisNumberKeys]:
-    K extends RedisStringKeys ? string : number
-}
-
-export default class RedisConfig extends Config<RedisStringKeys, RedisNumberKeys, never> {
-    constructor(redisCfgName: string) {
-        super(redisCfgName, redisKeys)
+export default class RedisConfig extends Config implements IRedisConfig {
+    private readonly hostValue: string
+    private readonly portValue: number
+    constructor(
+        host: unknown,
+        port: unknown
+    ) {
+        super()
+        this.hostValue = this.safelyGetString(host)
+        this.portValue = this.safelyGetNumber(port)
     }
-
-    public getAllVars(): TRedisConfig {
-        return {
-            REDIS_HOST: this.GET_CONFIG_STRING('REDIS_HOST'),
-            REDIS_PORT: this.GET_CONFIG_NUMBER('REDIS_PORT')
-        }
+    public host(): string {
+        return this.hostValue
+    }
+    public port(): number {
+        return this.portValue
     }
 }

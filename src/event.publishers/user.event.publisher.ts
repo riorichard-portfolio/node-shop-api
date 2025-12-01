@@ -18,7 +18,7 @@ export default class UserEventPublisher implements IUserEventPublisher {
     public async publishUserRegistered(data: IUserToCreate): Promise<void> {
         await this.producer.publish(
             [data],
-            this.topics.USER_REGISTERED
+            this.topics.userRegisteredTopic()
         )
     }
 }

@@ -7,19 +7,20 @@ import {
     ISqlCommandDB,
     ISqlQueryDB
 } from '../.domains/.shared.domain/sql.db'
-import { TPostgreConfig } from '../config/config.instances/postgre.config';
+
+import { IPostgreConfig } from '../.domains/.shared.domain/config';
 
 export default class PostgreDatabase implements ISqlCommandDB, ISqlQueryDB {
     private readonly pool: Pool;
 
-    constructor(config: TPostgreConfig) {
+    constructor(config: IPostgreConfig) {
         this.pool = new Pool({
-            host: config.PG_HOST,
-            port: config.PG_PORT,
-            database: config.PG_DATABASE,
-            user: config.PG_USER,
-            password: config.PG_PASSWORD,
-            max: config.PG_MAX_POOL
+            host: config.host(),
+            port: config.port(),
+            database: config.databaseName(),
+            user: config.username(),
+            password: config.password(),
+            max: config.maxPool()
         });
         this.setupEventListeners();
     }

@@ -1,7 +1,7 @@
 import { Kafka, Producer, Consumer } from "kafkajs";
 
 import { IMQProducer, IMQConsumer } from '../.domains/.shared.domain/message.broker'
-import { TKafkaConfig } from "../config/config.instances/kafka.config";
+import { IKafkaConfig } from "../.domains/.shared.domain/config";
 
 const errorAlreadyStarted = 'invalid start operation: kafka already started'
 const errorNotStartedYet = 'invalid kafka operation: kafka not started yet'
@@ -16,16 +16,16 @@ export default class KafkaMQ implements IMQProducer, IMQConsumer {
     private kafkaStopped: boolean = false
     private consumerHandlersMap: Record<string, (messages: string[]) => Promise<void> | void> = {}
 
-    constructor(config: TKafkaConfig) {
-        this.brokerNodes = [config.KAFKA_BROKER_NODE]
+    constructor(config: IKafkaConfig) {
+        this.brokerNodes = config.brokerNodes()
         const newKafka = new Kafka({
-            brokers: [config.KAFKA_BROKER_NODE],
-            clientId: config.KAFKA_CLIENT_ID
+            brokers: this.brokerNodes,
+            clientId: config.clientId()
         })
         this.kafkaInstance = newKafka
         this.producer = newKafka.producer()
         this.consumer = newKafka.consumer({
-            groupId: config.KAFKA_GROUP_ID
+            groupId: config.groupId()
         })
     }
 

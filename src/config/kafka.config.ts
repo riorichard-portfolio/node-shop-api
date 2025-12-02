@@ -1,5 +1,5 @@
 import Config from './.base.config'
-import { IKafkaConfig } from '../../.domains/.shared.domain/config'
+import { IKafkaConfig } from '../.domains/.shared.domain/config'
 
 export default class KafkaConfig extends Config implements IKafkaConfig {
     private readonly brokerNodesValue: string[]

@@ -1,4 +1,4 @@
-import { IPostgreConfig } from "../../.domains/.shared.domain/config"
+import { IPostgreConfig } from "../.domains/.shared.domain/config"
 import Config from "./.base.config"
 
 export default class PostgreConfig extends Config implements IPostgreConfig {

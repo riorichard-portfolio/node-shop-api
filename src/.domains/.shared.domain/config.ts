@@ -1,5 +1,3 @@
-import { IAuthMQTopics, IUserMQTopics } from "./message.broker.topics"
-
 export interface IKafkaConfig {
     brokerNodes(): string[]
     clientId(): string
@@ -24,11 +22,7 @@ export interface IBcryptConfig {
     saltRounds(): number
 }
 
-export interface IAppConfig {
-    kafkaConfig(): IKafkaConfig
-    postgreConfig(): IPostgreConfig
-    redisConfig(): IRedisConfig
-    bcryptConfig(): IBcryptConfig
-    authMqTopics(): IAuthMQTopics
-    userMqTopics(): IUserMQTopics
+export interface IAuthConfig {
+    sessionExpiredDays(): number
+    accessTokenExpiredMins(): number
 }

@@ -1,14 +1,21 @@
 import {
+    IAuthMQTopics,
+    IUserMQTopics
+} from "../.domains/.shared.domain/message.broker.topics";
+import {
     IAppConfig,
     IBcryptConfig,
     IKafkaConfig,
     IPostgreConfig,
     IRedisConfig
 } from "../.domains/.shared.domain/config";
-import BcryptConfig from "./config.instances/bcrypt.config";
-import KafkaConfig from "./config.instances/kafka.config";
-import PostgreConfig from "./config.instances/postgre.config";
-import RedisConfig from "./config.instances/redis.config";
+
+import BcryptConfig from "./bcrypt.config";
+import KafkaConfig from "./kafka.config";
+import PostgreConfig from "./postgre.config";
+import RedisConfig from "./redis.config";
+import AuthMQTopics from "./auth.mq.topics";
+import UserMQTopics from "./user.mq.topics";
 
 type NodeEnv = 'local' | 'development' | 'staging' | 'production'
 
@@ -19,6 +26,8 @@ export default class EnvConfigLoader implements IAppConfig {
     private readonly postgreConfigValue: IPostgreConfig
     private readonly redisConfigValue: IRedisConfig
     private readonly bcryptConfigValue: IBcryptConfig
+    private readonly authMQTopicsValue: IAuthMQTopics
+    private readonly userMQTopicsValue: IUserMQTopics
     constructor(nodeEnv: string = 'local') {
         if (nodeEnv != 'local' && nodeEnv != 'development' && nodeEnv != 'staging' && nodeEnv != 'production') {
             throw new Error('node env must either local | development | staging | production')
@@ -47,6 +56,12 @@ export default class EnvConfigLoader implements IAppConfig {
         this.bcryptConfigValue = new BcryptConfig(
             process.env['bcrypt.salt.rounds']
         )
+        this.authMQTopicsValue = new AuthMQTopics(
+            process.env['session.created.topic']
+        )
+        this.userMQTopicsValue = new UserMQTopics(
+            process.env['user.registered.topic']
+        )
     }
 
     public kafkaConfig(): IKafkaConfig {
@@ -63,5 +78,13 @@ export default class EnvConfigLoader implements IAppConfig {
 
     public bcryptConfig(): IBcryptConfig {
         return this.bcryptConfigValue
+    }
+
+    public authMqTopics(): IAuthMQTopics {
+        return this.authMQTopicsValue
+    }
+
+    public userMqTopics(): IUserMQTopics {
+        return this.userMQTopicsValue
     }
 }

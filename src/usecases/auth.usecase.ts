@@ -24,6 +24,7 @@ import { IUserService } from "../.domains/user.domain/user.service.domain";
 import { IApplicationResultFactory } from '../.domains/.shared.domain/result.factory';
 import { IAuthOutputDTOFactory } from '../.domains/auth.domain/auth.factories';
 import { IAuthTokenCreator } from '../.domains/auth.domain/auth.token.management';
+import { IAuthConfig } from '../.domains/.shared.domain/config';
 
 export default class AuthUsecase implements IAuthUsecase {
     private readonly msPerDay = 24 * 60 * 60 * 1000;
@@ -31,13 +32,13 @@ export default class AuthUsecase implements IAuthUsecase {
         // outside auth domains
         private readonly resultFactory: IApplicationResultFactory,
         private readonly userService: IUserService,
-        private readonly sessionExpiredDays: number,
         private readonly bcryptVerifier: IBcryptVerifier,
 
         private readonly publisher: IAuthEventPublisher,
         private readonly repository: IAuthQueryRepository,
         private readonly tokenCreator: IAuthTokenCreator,
-        private readonly OutputDTOFactory: IAuthOutputDTOFactory
+        private readonly OutputDTOFactory: IAuthOutputDTOFactory,
+        private readonly authConfig: IAuthConfig
     ) { }
 
     private generateSessionId(): string {
@@ -45,7 +46,7 @@ export default class AuthUsecase implements IAuthUsecase {
     }
 
     private generateExpiredAt(): number {
-        return Date.now() + (this.sessionExpiredDays * this.msPerDay)
+        return Date.now() + (this.authConfig.sessionExpiredDays() * this.msPerDay)
     }
 
     public async register(data: IRegisterInputDTO): Promise<TApplicationResults<{}, TRegisterFailedType>> {

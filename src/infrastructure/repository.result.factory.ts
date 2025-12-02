@@ -1,7 +1,19 @@
 import { IFoundRepositoryData, INotFoundRepositoryData } from '../.domains/.shared.domain/types'
 import { IRepositoryResultFactory } from '../.domains/.shared.domain/result.factory'
-import FoundRepositoryData from './repository.results/found.repository.data'
-import NotFoundRepositoryData from './repository.results/not.found.repository.data'
+
+class FoundRepositoryData<RepositoryData> implements IFoundRepositoryData<RepositoryData> {
+    public readonly found = true
+    constructor(
+        private readonly repositoryData: RepositoryData
+    ) { }
+    public data(): RepositoryData {
+        return this.repositoryData
+    }
+}
+
+class NotFoundRepositoryData implements INotFoundRepositoryData {
+    public readonly found = false
+}
 
 export default class RepositoryResultFactory implements IRepositoryResultFactory {
     public createFoundData<RepositoryData>(repositoryData: RepositoryData): IFoundRepositoryData<RepositoryData> {

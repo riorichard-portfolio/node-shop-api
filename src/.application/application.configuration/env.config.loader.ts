@@ -1,21 +1,26 @@
 import {
     IAuthMQTopics,
     IUserMQTopics
-} from "../.domains/.shared.domain/message.broker.topics";
+} from "../../.domains/.shared.domain/message.broker.topics";
 import {
-    IAppConfig,
+    IAuthConfig,
     IBcryptConfig,
     IKafkaConfig,
     IPostgreConfig,
+    IRateLimiterConfig,
     IRedisConfig
-} from "../.domains/.shared.domain/config";
+} from "../../.domains/.shared.domain/config";
 
-import BcryptConfig from "./bcrypt.config";
-import KafkaConfig from "./kafka.config";
-import PostgreConfig from "./postgre.config";
-import RedisConfig from "./redis.config";
-import AuthMQTopics from "./auth.mq.topics";
-import UserMQTopics from "./user.mq.topics";
+import { IAppConfig } from "../.application.architecture";
+
+import BcryptConfig from "../../config/bcrypt.config";
+import KafkaConfig from "../../config/kafka.config";
+import PostgreConfig from "../../config/postgre.config";
+import RedisConfig from "../../config/redis.config";
+import AuthMQTopics from "../../config/auth.mq.topics";
+import UserMQTopics from "../../config/user.mq.topics";
+import AuthConfig from '../../config/auth.config';
+import RateLimiterConfig from '../../config/rate.limiter.config';
 
 type NodeEnv = 'local' | 'development' | 'staging' | 'production'
 
@@ -28,6 +33,9 @@ export default class EnvConfigLoader implements IAppConfig {
     private readonly bcryptConfigValue: IBcryptConfig
     private readonly authMQTopicsValue: IAuthMQTopics
     private readonly userMQTopicsValue: IUserMQTopics
+    private readonly authConfigValue: IAuthConfig
+    private readonly rateLimiterConfigValue: IRateLimiterConfig
+
     constructor(nodeEnv: string = 'local') {
         if (nodeEnv != 'local' && nodeEnv != 'development' && nodeEnv != 'staging' && nodeEnv != 'production') {
             throw new Error('node env must either local | development | staging | production')
@@ -62,6 +70,14 @@ export default class EnvConfigLoader implements IAppConfig {
         this.userMQTopicsValue = new UserMQTopics(
             process.env['user.registered.topic']
         )
+        this.authConfigValue = new AuthConfig(
+            process.env['access.token.expired.mins'],
+            process.env['session.expired.days']
+        )
+        this.rateLimiterConfigValue = new RateLimiterConfig(
+            process.env['user.request.limit'],
+            process.env['user.request.time.seconds']
+        )
     }
 
     public kafkaConfig(): IKafkaConfig {
@@ -86,5 +102,13 @@ export default class EnvConfigLoader implements IAppConfig {
 
     public userMqTopics(): IUserMQTopics {
         return this.userMQTopicsValue
+    }
+
+    public authConfig(): IAuthConfig {
+        return this.authConfigValue
+    }
+
+    public rateLimiterConfig(): IRateLimiterConfig {
+        return this.rateLimiterConfigValue
     }
 }

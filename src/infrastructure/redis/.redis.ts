@@ -1,7 +1,7 @@
 import { Redis } from "ioredis";
 
-import IMemoryCache from '../.domains/.shared.domain/memory.cache'
-import { IRedisConfig } from "../.domains/.shared.domain/config";
+import IMemoryCache from '../../.domains/.shared.domain/memory.cache'
+import { IRedisConfig } from "../../.domains/.shared.domain/config";
 
 const errorNotNumberIncrement = "invalid operation increment: incrementWithTTL does not return number"
 

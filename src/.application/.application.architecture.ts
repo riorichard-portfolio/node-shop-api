@@ -3,7 +3,8 @@ import {
     IAuthConfig,
     IBcryptConfig,
     IPostgreConfig,
-    IRedisConfig
+    IRedisConfig,
+    IRateLimiterConfig
 } from '../.domains/.shared.domain/config'
 
 import {
@@ -49,6 +50,7 @@ export interface IAppConfig {
     authMqTopics(): IAuthMQTopics
     userMqTopics(): IUserMQTopics
     authConfig(): IAuthConfig
+    rateLimiterConfig(): IRateLimiterConfig
 }
 
 export interface IAppInfra {
@@ -63,4 +65,22 @@ export interface IAppInfra {
     kafkaProducer(): IMQProducer
     kafkaConsumer(): IMQConsumer
     redis(): IMemoryCache
+}
+
+export interface IAppFeatures { // usecases
+
+}
+
+export interface IAppWorkerStorage { // command db repositories
+
+}
+
+export interface IAppRateLimiters { // infra ratelimiters
+
+}
+
+export interface IAppArchitecture {
+    features(): IAppFeatures
+    workerStorage(): IAppWorkerStorage
+    rateLimiters(): IAppRateLimiters
 }

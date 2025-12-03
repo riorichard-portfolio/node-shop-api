@@ -26,3 +26,8 @@ export interface IAuthConfig {
     sessionExpiredDays(): number
     accessTokenExpiredMins(): number
 }
+
+export interface IRateLimiterConfig {
+    userRequestLimit(): number
+    userRequestTimeSeconds(): number
+}

@@ -1,3 +1,5 @@
+import { IAppConfig } from "../.application.architecture";
+
 import {
     IAuthMQTopics,
     IUserMQTopics
@@ -7,11 +9,9 @@ import {
     IBcryptConfig,
     IKafkaConfig,
     IPostgreConfig,
-    IRateLimiterConfig,
+    IUserRateLimiterConfig,
     IRedisConfig
 } from "../../.domains/.shared.domain/config";
-
-import { IAppConfig } from "../.application.architecture";
 
 import BcryptConfig from "../../config/bcrypt.config";
 import KafkaConfig from "../../config/kafka.config";
@@ -20,7 +20,7 @@ import RedisConfig from "../../config/redis.config";
 import AuthMQTopics from "../../config/auth.mq.topics";
 import UserMQTopics from "../../config/user.mq.topics";
 import AuthConfig from '../../config/auth.config';
-import RateLimiterConfig from '../../config/rate.limiter.config';
+import UserRateLimiterConfig from '../../config/user.rate.limiter.config';
 
 type NodeEnv = 'local' | 'development' | 'staging' | 'production'
 
@@ -34,7 +34,7 @@ export default class EnvConfigLoader implements IAppConfig {
     private readonly authMQTopicsValue: IAuthMQTopics
     private readonly userMQTopicsValue: IUserMQTopics
     private readonly authConfigValue: IAuthConfig
-    private readonly rateLimiterConfigValue: IRateLimiterConfig
+    private readonly userRateLimiterConfigValue: IUserRateLimiterConfig
 
     constructor(nodeEnv: string = 'local') {
         if (nodeEnv != 'local' && nodeEnv != 'development' && nodeEnv != 'staging' && nodeEnv != 'production') {
@@ -74,7 +74,7 @@ export default class EnvConfigLoader implements IAppConfig {
             process.env['access.token.expired.mins'],
             process.env['session.expired.days']
         )
-        this.rateLimiterConfigValue = new RateLimiterConfig(
+        this.userRateLimiterConfigValue = new UserRateLimiterConfig(
             process.env['user.request.limit'],
             process.env['user.request.time.seconds']
         )
@@ -108,7 +108,7 @@ export default class EnvConfigLoader implements IAppConfig {
         return this.authConfigValue
     }
 
-    public rateLimiterConfig(): IRateLimiterConfig {
-        return this.rateLimiterConfigValue
+    public userRateLimiterConfig(): IUserRateLimiterConfig {
+        return this.userRateLimiterConfigValue
     }
 }

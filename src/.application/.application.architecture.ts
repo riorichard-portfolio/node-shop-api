@@ -4,7 +4,7 @@ import {
     IBcryptConfig,
     IPostgreConfig,
     IRedisConfig,
-    IRateLimiterConfig
+    IUserRateLimiterConfig
 } from '../.domains/.shared.domain/config'
 
 import {
@@ -42,6 +42,22 @@ import {
 
 import IMemoryCache from '../.domains/.shared.domain/memory.cache'
 
+import {
+    IUserRateLimiter
+} from '../.domains/.shared.domain/rate.limiter'
+
+import {
+    IAuthUsecase
+} from '../.domains/auth.domain/auth.usecase.domain'
+
+import {
+    IAuthEventCommandRepository
+} from '../.domains/auth.domain/auth.event.domain'
+
+import {
+    IUserEventCommandRepository
+} from '../.domains/user.domain/user.event.domain'
+
 export interface IAppConfig {
     kafkaConfig(): IKafkaConfig
     postgreConfig(): IPostgreConfig
@@ -50,10 +66,12 @@ export interface IAppConfig {
     authMqTopics(): IAuthMQTopics
     userMqTopics(): IUserMQTopics
     authConfig(): IAuthConfig
-    rateLimiterConfig(): IRateLimiterConfig
+    userRateLimiterConfig(): IUserRateLimiterConfig
 }
 
 export interface IAppInfra {
+    prepereInfrastructure(): Promise<void>
+
     appResultFactory(): IApplicationResultFactory
     repoResultFactory(): IRepositoryResultFactory
     authTokenCreator(): IAuthTokenCreator
@@ -65,14 +83,16 @@ export interface IAppInfra {
     kafkaProducer(): IMQProducer
     kafkaConsumer(): IMQConsumer
     redis(): IMemoryCache
+    userRateLimiter(): IUserRateLimiter
 }
 
 export interface IAppFeatures { // usecases
-
+    authFeature(): IAuthUsecase
 }
 
 export interface IAppWorkerStorage { // command db repositories
-
+    authWorkerStorage(): IAuthEventCommandRepository
+    userWorkerStorage(): IUserEventCommandRepository
 }
 
 export interface IAppRateLimiters { // infra ratelimiters
@@ -83,4 +103,5 @@ export interface IAppArchitecture {
     features(): IAppFeatures
     workerStorage(): IAppWorkerStorage
     rateLimiters(): IAppRateLimiters
+    workerConsumer(): IMQConsumer
 }

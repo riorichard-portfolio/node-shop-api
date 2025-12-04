@@ -20,6 +20,7 @@ export default class PostgreDatabase {
     private setupEventListeners(): void {
         this.pool.on('error', (err) => {
             console.error('❌ PostgreSQL pool error:', err);
+            throw err
         });
         this.pool.on('connect', () => {
             console.log('✅ New client connected to pool');

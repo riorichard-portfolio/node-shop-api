@@ -27,7 +27,7 @@ export interface IAuthConfig {
     accessTokenExpiredMins(): number
 }
 
-export interface IRateLimiterConfig {
+export interface IUserRateLimiterConfig {
     userRequestLimit(): number
     userRequestTimeSeconds(): number
 }

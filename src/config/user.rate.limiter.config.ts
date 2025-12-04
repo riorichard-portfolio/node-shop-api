@@ -1,7 +1,7 @@
 import Config from './.base.config'
-import { IRateLimiterConfig } from '../.domains/.shared.domain/config'
+import { IUserRateLimiterConfig } from '../.domains/.shared.domain/config'
 
-export default class RateLimiterConfig extends Config implements IRateLimiterConfig {
+export default class UserRateLimiterConfig extends Config implements IUserRateLimiterConfig {
     private readonly userRequestLimitValue: number
     private readonly userRequestTimeSecondsValue: number
 

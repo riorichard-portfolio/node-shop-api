@@ -3,7 +3,7 @@ import { IAppConfig } from "../.application.architecture";
 import {
     IAuthMQTopics,
     IUserMQTopics
-} from "../../../.domains/.shared.domain/message.broker.topics";
+} from "../../.domains/.shared.domain/message.broker.topics";
 import {
     IAuthConfig,
     IBcryptConfig,
@@ -11,20 +11,20 @@ import {
     IPostgreConfig,
     IUserRateLimiterConfig,
     IRedisConfig
-} from "../../../.domains/.shared.domain/config";
+} from "../../.domains/.shared.domain/config";
 
-import BcryptConfig from "../../../config/bcrypt.config";
-import KafkaConfig from "../../../config/kafka.config";
-import PostgreConfig from "../../../config/postgre.config";
-import RedisConfig from "../../../config/redis.config";
-import AuthMQTopics from "../../../config/auth.mq.topics";
-import UserMQTopics from "../../../config/user.mq.topics";
-import AuthConfig from '../../../config/auth.config';
-import UserRateLimiterConfig from '../../../config/user.rate.limiter.config';
+import BcryptConfig from "../../config/bcrypt.config";
+import KafkaConfig from "../../config/kafka.config";
+import PostgreConfig from "../../config/postgre.config";
+import RedisConfig from "../../config/redis.config";
+import AuthMQTopics from "../../config/auth.mq.topics";
+import UserMQTopics from "../../config/user.mq.topics";
+import AuthConfig from '../../config/auth.config';
+import UserRateLimiterConfig from '../../config/user.rate.limiter.config';
 
 type NodeEnv = 'local' | 'development' | 'staging' | 'production'
 
-export default class EnvConfigLoader implements IAppConfig {
+export default class V1EnvConfigLoader implements IAppConfig {
     private readonly nodeEnv: NodeEnv
 
     private readonly kafkaConfigValue: IKafkaConfig

@@ -1,22 +1,14 @@
-import { IAppInfra, IAppConfig } from "../.application.architecture.ts";
+import AppEnvConfig from "./app.env.config.ts";
 
-import { IApplicationResultFactory, IRepositoryResultFactory } from "../../.domains/.shared.domain/result.factory.ts";
-import { IAuthTokenCreator, IAuthTokenVerifier } from "../../.domains/auth.domain/auth.token.management.ts";
-import { IBcryptHasher, IBcryptVerifier } from "../../.domains/.shared.domain/bcrypt.ts";
-import { ISqlCommandDB, ISqlQueryDB } from "../../.domains/.shared.domain/sql.db.ts";
-import { IMQConsumer, IMQProducer } from "../../.domains/.shared.domain/message.broker.ts";
-import IMemoryCache from "../../.domains/.shared.domain/memory.cache.ts";
-import { IUserRateLimiter } from "../../.domains/.shared.domain/rate.limiter.ts";
-
-import ApplicationResultFactory from "../../infrastructure/application.results.factory.ts";
-import AuthJwt from "../../infrastructure/jwt/auth.jwt.ts";
 import Bcrypt from "../../infrastructure/bcrypt.ts";
-import RepositoryResultFactory from "../../infrastructure/repository.result.factory.ts";
 import QueryPostgre from '../../infrastructure/postgre/query.postgre.ts'
 import CommandPostgre from '../../infrastructure/postgre/command.postgre.ts'
 import KafkaMQ from "../../infrastructure/kafka.ts";
 import RedisCache from '../../infrastructure/redis/.redis.ts'
 import UserRateLimiter from '../../infrastructure/redis/user.rate.limiter.ts'
+import ApplicationResultFactory from '../../infrastructure/application.results.factory.ts'
+import RepositoryResultFactory from '../../infrastructure/repository.result.factory.ts'
+import AuthJwt from '../../infrastructure/jwt/auth.jwt.ts'
 
 const notHealthyQueryPostgreError = 'prepare postgre error: query postgre is not healthy'
 const notHealthyCommandPostgreError = 'prepare postgre error: command postgre is not healthy'
@@ -31,13 +23,14 @@ const kafkaNotPreparedError = 'invalid kafka usage: kafka is failed to prepared 
 const redisNotPreparedError = 'invalid redis usage: redis is failed to prepared cannot be forced'
 const userRateLimiterNotPreparedError = 'invalid user rate limiter usage: user rate limiter is failed to prepared cannot be forced'
 
-export default class V1AppInfrastructure implements IAppInfra {
+export default class AppInfrastructure {
     private hasInfrastructurePrepared = false
 
-    private readonly appResultFactoryInfra: IApplicationResultFactory
-    private readonly repoResultFactoryInfra: IRepositoryResultFactory
-    private readonly authJwtInfra: AuthJwt
     private readonly bcryptInfra: Bcrypt
+    private readonly applicationResultFactoryInfra: ApplicationResultFactory
+    private readonly repositoryResultFactoryInfra: RepositoryResultFactory
+    private readonly authJwtInfra: AuthJwt
+
     private queryPostgreInfra: QueryPostgre | null = null
     private commandPostgreInfra: CommandPostgre | null = null
     private kafkaInfra: KafkaMQ | null = null
@@ -45,12 +38,26 @@ export default class V1AppInfrastructure implements IAppInfra {
     private userRateLimiterInfra: UserRateLimiter | null = null
 
     constructor(
-        private readonly appConfig: IAppConfig
+        private readonly appConfig: AppEnvConfig
     ) {
-        this.appResultFactoryInfra = new ApplicationResultFactory()
-        this.repoResultFactoryInfra = new RepositoryResultFactory()
+        this.applicationResultFactoryInfra = new ApplicationResultFactory()
+        this.repositoryResultFactoryInfra = new RepositoryResultFactory()
+
         this.authJwtInfra = new AuthJwt(appConfig.authConfig())
         this.bcryptInfra = new Bcrypt(appConfig.bcryptConfig())
+
+    }
+
+    public applicationResultFactory() {
+        return this.applicationResultFactoryInfra
+    }
+
+    public repositoryResultFactory() {
+        return this.repositoryResultFactoryInfra
+    }
+
+    public authJwt() {
+        return this.authJwtInfra
     }
 
     private verifyInfrastructurePreparation(): void {
@@ -140,31 +147,12 @@ export default class V1AppInfrastructure implements IAppInfra {
         ])
     }
 
-    public appResultFactory(): IApplicationResultFactory {
-        return this.appResultFactoryInfra
-    }
-
-    public authTokenCreator(): IAuthTokenCreator {
-        return this.authJwtInfra
-    }
-
-    public authTokenVerifier(): IAuthTokenVerifier {
-        return this.authJwtInfra
-    }
-
-    public bcryptHasher(): IBcryptHasher {
+    public bcrypt(): Bcrypt {
         return this.bcryptInfra
     }
 
-    public bcryptVerifier(): IBcryptVerifier {
-        return this.bcryptInfra
-    }
 
-    public repoResultFactory(): IRepositoryResultFactory {
-        return this.repoResultFactoryInfra
-    }
-
-    public commandPostgre(): ISqlCommandDB {
+    public commandPostgre(): CommandPostgre {
         this.verifyInfrastructurePreparation()
         if (this.commandPostgreInfra == null) {
             throw new Error(commandPostgreNotPreparedError)
@@ -172,7 +160,7 @@ export default class V1AppInfrastructure implements IAppInfra {
         return this.commandPostgreInfra
     }
 
-    public queryPostgre(): ISqlQueryDB {
+    public queryPostgre(): QueryPostgre {
         this.verifyInfrastructurePreparation()
         if (this.queryPostgreInfra == null) {
             throw new Error(queryPostgreNotPreparedError)
@@ -180,7 +168,7 @@ export default class V1AppInfrastructure implements IAppInfra {
         return this.queryPostgreInfra
     }
 
-    public kafkaConsumer(): IMQConsumer {
+    public kafka(): KafkaMQ {
         this.verifyInfrastructurePreparation()
         if (this.kafkaInfra == null) {
             throw new Error(kafkaNotPreparedError)
@@ -188,15 +176,7 @@ export default class V1AppInfrastructure implements IAppInfra {
         return this.kafkaInfra
     }
 
-    public kafkaProducer(): IMQProducer {
-        this.verifyInfrastructurePreparation()
-        if (this.kafkaInfra == null) {
-            throw new Error(kafkaNotPreparedError)
-        }
-        return this.kafkaInfra
-    }
-
-    public redis(): IMemoryCache {
+    public redis(): RedisCache {
         this.verifyInfrastructurePreparation()
         if (this.redisInfra == null) {
             throw new Error(redisNotPreparedError)
@@ -204,7 +184,7 @@ export default class V1AppInfrastructure implements IAppInfra {
         return this.redisInfra
     }
 
-    public userRateLimiter(): IUserRateLimiter {
+    public userRateLimiter(): UserRateLimiter {
         this.verifyInfrastructurePreparation()
         if (this.userRateLimiterInfra == null) {
             throw new Error(userRateLimiterNotPreparedError)

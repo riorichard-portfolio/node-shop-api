@@ -1,18 +1,3 @@
-import { IAppConfig } from "../.application.architecture";
-
-import {
-    IAuthMQTopics,
-    IUserMQTopics
-} from "../../.domains/.shared.domain/message.broker.topics";
-import {
-    IAuthConfig,
-    IBcryptConfig,
-    IKafkaConfig,
-    IPostgreConfig,
-    IUserRateLimiterConfig,
-    IRedisConfig
-} from "../../.domains/.shared.domain/config";
-
 import BcryptConfig from "../../config/bcrypt.config";
 import KafkaConfig from "../../config/kafka.config";
 import PostgreConfig from "../../config/postgre.config";
@@ -24,17 +9,17 @@ import UserRateLimiterConfig from '../../config/user.rate.limiter.config';
 
 type NodeEnv = 'local' | 'development' | 'staging' | 'production'
 
-export default class V1EnvConfigLoader implements IAppConfig {
+export default class AppEnvConfig {
     private readonly nodeEnv: NodeEnv
 
-    private readonly kafkaConfigValue: IKafkaConfig
-    private readonly postgreConfigValue: IPostgreConfig
-    private readonly redisConfigValue: IRedisConfig
-    private readonly bcryptConfigValue: IBcryptConfig
-    private readonly authMQTopicsValue: IAuthMQTopics
-    private readonly userMQTopicsValue: IUserMQTopics
-    private readonly authConfigValue: IAuthConfig
-    private readonly userRateLimiterConfigValue: IUserRateLimiterConfig
+    private readonly kafkaConfigValue: KafkaConfig
+    private readonly postgreConfigValue: PostgreConfig
+    private readonly redisConfigValue: RedisConfig
+    private readonly bcryptConfigValue: BcryptConfig
+    private readonly authMQTopicsValue: AuthMQTopics
+    private readonly userMQTopicsValue: UserMQTopics
+    private readonly authConfigValue: AuthConfig
+    private readonly userRateLimiterConfigValue: UserRateLimiterConfig
 
     constructor(nodeEnv: string = 'local') {
         if (nodeEnv != 'local' && nodeEnv != 'development' && nodeEnv != 'staging' && nodeEnv != 'production') {
@@ -80,35 +65,35 @@ export default class V1EnvConfigLoader implements IAppConfig {
         )
     }
 
-    public kafkaConfig(): IKafkaConfig {
+    public kafkaConfig(): KafkaConfig {
         return this.kafkaConfigValue
     }
 
-    public postgreConfig(): IPostgreConfig {
+    public postgreConfig(): PostgreConfig {
         return this.postgreConfigValue
     }
 
-    public redisConfig(): IRedisConfig {
+    public redisConfig(): RedisConfig {
         return this.redisConfigValue
     }
 
-    public bcryptConfig(): IBcryptConfig {
+    public bcryptConfig(): BcryptConfig {
         return this.bcryptConfigValue
     }
 
-    public authMqTopics(): IAuthMQTopics {
+    public authMqTopics(): AuthMQTopics {
         return this.authMQTopicsValue
     }
 
-    public userMqTopics(): IUserMQTopics {
+    public userMqTopics(): UserMQTopics {
         return this.userMQTopicsValue
     }
 
-    public authConfig(): IAuthConfig {
+    public authConfig(): AuthConfig {
         return this.authConfigValue
     }
 
-    public userRateLimiterConfig(): IUserRateLimiterConfig {
+    public userRateLimiterConfig(): UserRateLimiterConfig {
         return this.userRateLimiterConfigValue
     }
 }

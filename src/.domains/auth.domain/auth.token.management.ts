@@ -1,6 +1,9 @@
-export interface IVerifiedAccessTokenPayload {
-    success: true
+export interface IAccessTokenPayload {
     userId(): string
+}
+
+export interface IVerifiedAccessTokenPayload extends IAccessTokenPayload {
+    success: true
 }
 
 export type TAccessTokenFailedReasons = 'ACCESS_TOKEN_EXPIRED' | 'INVALID_ACCESS_TOKEN'
@@ -14,9 +17,12 @@ export type TAccessTokenVerifyResult =
     | IVerifiedAccessTokenPayload
     | IFailedAccessTokenVerifying
 
-export interface IVerifiedRefreshTokenPayload {
-    success: true
+export interface IRefreshTokenPayload {
     sessionId(): string
+}
+
+export interface IVerifiedRefreshTokenPayload extends IRefreshTokenPayload {
+    success: true
 }
 
 export type TRefreshTokenFailedReasons = 'SESSION_EXPIRED' | 'INVALID_REFRESH_TOKEN'

@@ -9,6 +9,7 @@ import UserRateLimiter from '../../infrastructure/redis/user.rate.limiter.ts'
 import ApplicationResultFactory from '../../infrastructure/application.results.factory.ts'
 import RepositoryResultFactory from '../../infrastructure/repository.result.factory.ts'
 import AuthJwt from '../../infrastructure/jwt/auth.jwt.ts'
+import LocalUserRateLimiter from '../../infrastructure/local.memory/local.user.rate.limiter.ts'
 
 const notHealthyQueryPostgreError = 'prepare postgre error: query postgre is not healthy'
 const notHealthyCommandPostgreError = 'prepare postgre error: command postgre is not healthy'
@@ -36,6 +37,7 @@ export default class AppInfrastructure {
     private kafkaInfra: KafkaMQ | null = null
     private redisInfra: RedisCache | null = null
     private userRateLimiterInfra: UserRateLimiter | null = null
+    private localUserRateLimiterInfra: LocalUserRateLimiter 
 
     constructor(
         private readonly appConfig: AppEnvConfig
@@ -45,7 +47,7 @@ export default class AppInfrastructure {
 
         this.authJwtInfra = new AuthJwt(appConfig.authConfig())
         this.bcryptInfra = new Bcrypt(appConfig.bcryptConfig())
-
+        this.localUserRateLimiterInfra = new LocalUserRateLimiter(appConfig.userRateLimiterConfig())
     }
 
     public applicationResultFactory() {
@@ -143,7 +145,8 @@ export default class AppInfrastructure {
             this.commandPostgreInfra.close(),
             this.kafkaInfra.stop(),
             this.redisInfra.close(),
-            this.userRateLimiterInfra.close()
+            this.userRateLimiterInfra.close(),
+            this.localUserRateLimiterInfra.stop()
         ])
     }
 

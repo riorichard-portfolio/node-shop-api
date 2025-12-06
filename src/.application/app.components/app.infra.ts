@@ -37,7 +37,7 @@ export default class AppInfrastructure {
     private kafkaInfra: KafkaMQ | null = null
     private redisInfra: RedisCache | null = null
     private userRateLimiterInfra: UserRateLimiter | null = null
-    private localUserRateLimiterInfra: LocalUserRateLimiter 
+    private localUserRateLimiterInfra: LocalUserRateLimiter
 
     constructor(
         private readonly appConfig: AppEnvConfig
@@ -193,6 +193,10 @@ export default class AppInfrastructure {
             throw new Error(userRateLimiterNotPreparedError)
         }
         return this.userRateLimiterInfra
+    }
+
+    public localUserRateLimiter(): LocalUserRateLimiter {
+        return this.localUserRateLimiterInfra
     }
 
 }

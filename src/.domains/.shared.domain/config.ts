@@ -31,3 +31,7 @@ export interface IUserRateLimiterConfig {
     userRequestLimit(): number
     userRequestTimeSeconds(): number
 }
+
+export interface IRestAppConfig{
+    port(): number
+}

@@ -29,7 +29,7 @@ export default class AuthHandler extends ExpressHandler {
         super()
     }
 
-    public async login(request: Request, response: Response) {
+    public login = async (request: Request, response: Response) => {
         const validatedBody = this.safelyGetObject(request.body, loginBodySchema)
         if (!validatedBody.isValidData) {
             return this.invalidDataResponse(response, validatedBody.getInvalidKeysMessages())
@@ -52,7 +52,7 @@ export default class AuthHandler extends ExpressHandler {
         )
     }
 
-    public async register(request: Request, response: Response) {
+    public register = async (request: Request, response: Response) => {
         const validatedBody = this.safelyGetObject(request.body, registerBodySchema)
         if (!validatedBody.isValidData) {
             return this.invalidDataResponse(response, validatedBody.getInvalidKeysMessages())
@@ -70,7 +70,7 @@ export default class AuthHandler extends ExpressHandler {
         return this.createdResponse(response)
     }
 
-    public async refreshToken(request: Request, response: Response) {
+    public refreshToken = async (request: Request, response: Response) => {
         const validatedBody = this.safelyGetObject(request.body, refreshTokenSchema)
         if (!validatedBody.isValidData) {
             return this.invalidDataResponse(response, validatedBody.getInvalidKeysMessages())

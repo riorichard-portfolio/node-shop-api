@@ -7,3 +7,10 @@ export interface ICreateNewUserInputDTO {
 export interface IFindUserByEmailInputDTO {
     email(): string
 }
+
+export interface IEventRegisteredUserInputDTO {
+    userId(): string
+    email(): string
+    hashedPassword(): string
+    fullname(): string
+}

@@ -20,7 +20,7 @@ export default class ExpressMiddlewares extends ExpressHandler {
         super()
     }
 
-    public accessJwtMiddleware(request: Request, response: Response, next: NextFunction) {
+    public accessJwtMiddleware = (request: Request, response: Response, next: NextFunction) => {
         const authorization = request.headers.authorization
         if (authorization == undefined) {
             return this.unauthorizedResponse(response, noAuthorizationError)
@@ -41,7 +41,7 @@ export default class ExpressMiddlewares extends ExpressHandler {
         return next()
     }
 
-    public refreshJwtMiddleware(request: Request, response: Response, next: NextFunction) {
+    public refreshJwtMiddleware = (request: Request, response: Response, next: NextFunction) => {
         const authorization = request.headers.authorization
         if (authorization == undefined) {
             return this.unauthorizedResponse(response, noAuthorizationError)
@@ -61,7 +61,7 @@ export default class ExpressMiddlewares extends ExpressHandler {
         return next()
     }
 
-    public async userRateLimitMiddleware(request: Request, response: Response, next: NextFunction) {
+    public userRateLimitMiddleware = async (request: Request, response: Response, next: NextFunction) => {
         if (request.authorizedAccessPayload == undefined) {
             throw new Error(noAuthorizedAccessPayloadError)
         }
@@ -74,12 +74,12 @@ export default class ExpressMiddlewares extends ExpressHandler {
         return next()
     }
 
-    public exceptionMiddleware(
+    public exceptionMiddleware = (
         error: Error,
         request: Request,
         response: Response,
         _: NextFunction
-    ) {
+    ) => {
         console.error('🔥 INTERNAL ERROR:', {
             message: error.message,
             stack: error.stack,

@@ -6,6 +6,7 @@ import AuthMQTopics from "../../config/auth.mq.topics";
 import UserMQTopics from "../../config/user.mq.topics";
 import AuthConfig from '../../config/auth.config';
 import UserRateLimiterConfig from '../../config/user.rate.limiter.config';
+import RestAppConfig from '../../config/rest.app.config'
 
 type NodeEnv = 'local' | 'development' | 'staging' | 'production'
 
@@ -20,6 +21,7 @@ export default class AppEnvConfig {
     private readonly userMQTopicsValue: UserMQTopics
     private readonly authConfigValue: AuthConfig
     private readonly userRateLimiterConfigValue: UserRateLimiterConfig
+    private readonly restAppConfigValue: RestAppConfig
 
     constructor(nodeEnv: string = 'local') {
         if (nodeEnv != 'local' && nodeEnv != 'development' && nodeEnv != 'staging' && nodeEnv != 'production') {
@@ -63,6 +65,9 @@ export default class AppEnvConfig {
             process.env['user.request.limit'],
             process.env['user.request.time.seconds']
         )
+        this.restAppConfigValue = new RestAppConfig(
+            process.env['rest.app.port']
+        )
     }
 
     public kafkaConfig(): KafkaConfig {
@@ -95,5 +100,9 @@ export default class AppEnvConfig {
 
     public userRateLimiterConfig(): UserRateLimiterConfig {
         return this.userRateLimiterConfigValue
+    }
+
+    public restAppConfig(): RestAppConfig{
+        return this.restAppConfigValue
     }
 }

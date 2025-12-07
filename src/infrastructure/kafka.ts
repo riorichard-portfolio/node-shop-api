@@ -112,10 +112,9 @@ export default class KafkaMQ implements IMQProducer, IMQConsumer {
                 const consumerHandler = this.consumerHandlersMap[batch.topic]
                 if (consumerHandler === undefined) {
                     console.error('⚠️ Unknown unhandled topic, skipping entire batch...');
-                    throw new Error('invalid consumer handler: aborting all kafka operation')
+                    // throw new Error('invalid consumer handler: aborting all kafka operation')
                 } else {
                     await consumerHandler(stringMessages)
-                    stringMessages.length = 0; // Reset array
                     await commitOffsetsIfNecessary()
                 }
             }

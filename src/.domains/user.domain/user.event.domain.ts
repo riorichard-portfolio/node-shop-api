@@ -1,9 +1,14 @@
-import { IEventRegisteredUserInputDTO } from "./user.input.dto"
+export interface IUserToCreate {
+    userId: string
+    email: string
+    hashedPassword: string
+    fullname: string
+}
 
 export interface IUserEventPublisher {
-    publishUserRegistered(data: IEventRegisteredUserInputDTO): Promise<void>
+    publishUserRegistered(data: IUserToCreate): Promise<void>
 }
 
 export interface IUserEventCommandRepository {
-    bulkInsertUser(users: IEventRegisteredUserInputDTO[]): Promise<void>
+    bulkInsertUser(users: IUserToCreate[]): Promise<void>
 }

@@ -62,6 +62,7 @@ export default class KafkaMQ implements IMQProducer, IMQConsumer {
         await this.consumer.disconnect();
         this.kafkaStarted = false;
         this.kafkaStopped = true
+        console.log('✅ kafka message broker stopped')
     }
 
     private calculateAcks(ack: boolean): number {

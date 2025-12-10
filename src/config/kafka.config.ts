@@ -6,17 +6,14 @@ export default class KafkaConfig extends Config implements IKafkaConfig {
     private readonly clientIdValue: string
     private readonly groupIdValue: string
     constructor(
-        brokerNodes: unknown,
-        clientId: unknown,
-        groupId: unknown
+        brokerNodes: string[],
+        clientId: string,
+        groupId: string
     ) {
         super()
-        const brokerNodesValueArray = this.safelyConvertToArray(brokerNodes)
-        this.brokerNodesValue = brokerNodesValueArray.map(brokerNode =>
-            this.safelyGetString(brokerNode)
-        )
-        this.clientIdValue = this.safelyGetString(clientId)
-        this.groupIdValue = this.safelyGetString(groupId)
+        this.brokerNodesValue = brokerNodes
+        this.clientIdValue = clientId
+        this.groupIdValue = groupId
     }
 
     public brokerNodes(): string[] {

@@ -9,21 +9,21 @@ export default class PostgreConfig extends Config implements IPostgreConfig {
     private readonly portValue: number
     private readonly maxPoolValue: number
     constructor(
-        host: unknown,
-        username: unknown,
-        databaseName: unknown,
-        password: unknown,
-        port: unknown,
-        maxPool: unknown
+        host: string,
+        username: string,
+        databaseName: string,
+        password: string,
+        port: number,
+        maxPool: number
     ) {
         super()
 
-        this.hostValue = this.safelyGetString(host)
-        this.usernameValue = this.safelyGetString(username)
-        this.databaseNameValue = this.safelyGetString(databaseName)
-        this.passwordValue = this.safelyGetString(password)
-        this.portValue = this.safelyGetNumber(port)
-        this.maxPoolValue = this.safelyGetNumber(maxPool)
+        this.hostValue = host
+        this.usernameValue = username
+        this.databaseNameValue = databaseName
+        this.passwordValue = password
+        this.portValue = port
+        this.maxPoolValue = maxPool
     }
     public host(): string {
         return this.hostValue

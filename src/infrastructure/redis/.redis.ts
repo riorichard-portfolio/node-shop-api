@@ -38,7 +38,7 @@ export default class RedisCache implements IMemoryCache {
         });
 
         this.redis.on('close', () => {
-            console.log('🔌 Redis connection closed');
+            console.log('✅ Redis connection closed');
         });
 
         this.redis.on('reconnecting', () => {

@@ -4,10 +4,10 @@ import { IUserMQTopics } from '../.domains/.shared.domain/message.broker.topics'
 export default class UserMQTopics extends Config implements IUserMQTopics {
     private readonly userRegisteredTopicValue: string
     constructor(
-        userRegisteredTopic: unknown
+        userRegisteredTopic: string
     ) {
         super()
-        this.userRegisteredTopicValue = this.safelyGetString(userRegisteredTopic)
+        this.userRegisteredTopicValue = userRegisteredTopic
     }
 
     public userRegisteredTopic(): string {

@@ -6,12 +6,12 @@ export default class AuthConfig extends Config implements IAuthConfig {
     private readonly sessionExpiredDaysValue: number
 
     constructor(
-        accessTokenExpiredMins: unknown,
-        sessionExpiredDays: unknown
+        accessTokenExpiredMins: number,
+        sessionExpiredDays: number
     ) {
         super()
-        this.accessTokenExpiredMinsValue = this.safelyGetNumber(accessTokenExpiredMins)
-        this.sessionExpiredDaysValue = this.safelyGetNumber(sessionExpiredDays)
+        this.accessTokenExpiredMinsValue = accessTokenExpiredMins
+        this.sessionExpiredDaysValue = sessionExpiredDays
     }
 
     public accessTokenExpiredMins(): number {

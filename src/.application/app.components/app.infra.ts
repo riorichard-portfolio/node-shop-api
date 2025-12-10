@@ -1,15 +1,15 @@
-import AppEnvConfig from "./app.env.config.ts";
+import AppEnvConfig from "./app.env.config";
 
-import Bcrypt from "../../infrastructure/bcrypt.ts";
-import QueryPostgre from '../../infrastructure/postgre/query.postgre.ts'
-import CommandPostgre from '../../infrastructure/postgre/command.postgre.ts'
-import KafkaMQ from "../../infrastructure/kafka.ts";
-import RedisCache from '../../infrastructure/redis/.redis.ts'
-import UserRateLimiter from '../../infrastructure/redis/user.rate.limiter.ts'
-import ApplicationResultFactory from '../../infrastructure/application.results.factory.ts'
-import RepositoryResultFactory from '../../infrastructure/repository.result.factory.ts'
-import AuthJwt from '../../infrastructure/jwt/auth.jwt.ts'
-import LocalUserRateLimiter from '../../infrastructure/local.memory/local.user.rate.limiter.ts'
+import Bcrypt from "../../infrastructure/bcrypt";
+import QueryPostgre from '../../infrastructure/postgre/query.postgre'
+import CommandPostgre from '../../infrastructure/postgre/command.postgre'
+import KafkaMQ from "../../infrastructure/kafka";
+import RedisCache from '../../infrastructure/redis/.redis'
+import UserRateLimiter from '../../infrastructure/redis/user.rate.limiter'
+import ApplicationResultFactory from '../../infrastructure/application.results.factory'
+import RepositoryResultFactory from '../../infrastructure/repository.result.factory'
+import AuthJwt from '../../infrastructure/jwt/auth.jwt'
+import LocalUserRateLimiter from '../../infrastructure/local.memory/local.user.rate.limiter'
 
 const notHealthyQueryPostgreError = 'prepare postgre error: query postgre is not healthy'
 const notHealthyCommandPostgreError = 'prepare postgre error: command postgre is not healthy'
@@ -114,7 +114,7 @@ export default class AppInfrastructure {
         this.userRateLimiterInfra = newUserRateLimiter
     }
 
-    public async prepereInfrastructure(): Promise<void> {
+    public async prepareInfrastructure(): Promise<void> {
         await this.preparePostgres()
         await this.prepareKafka()
         await this.prepareRedis()

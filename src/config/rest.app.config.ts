@@ -5,10 +5,10 @@ export default class RestAppConfig extends Config implements IRestAppConfig {
     private readonly portValue: number
 
     constructor(
-        port: unknown
+        port: number
     ) {
         super()
-        this.portValue = this.safelyGetNumber(port)
+        this.portValue = port
     }
 
     public port(): number {

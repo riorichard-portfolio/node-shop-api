@@ -5,12 +5,12 @@ export default class RedisConfig extends Config implements IRedisConfig {
     private readonly hostValue: string
     private readonly portValue: number
     constructor(
-        host: unknown,
-        port: unknown
+        host: string,
+        port: number
     ) {
         super()
-        this.hostValue = this.safelyGetString(host)
-        this.portValue = this.safelyGetNumber(port)
+        this.hostValue = host
+        this.portValue = port
     }
     public host(): string {
         return this.hostValue

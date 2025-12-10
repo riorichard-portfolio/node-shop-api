@@ -27,7 +27,7 @@ export default class PostgreDatabase {
         });
 
         this.pool.on('remove', () => {
-            console.log('🔌 Client removed from pool');
+            console.log('✅ Client removed from pool');
         });
     }
 

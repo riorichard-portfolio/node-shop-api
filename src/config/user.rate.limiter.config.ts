@@ -6,12 +6,12 @@ export default class UserRateLimiterConfig extends Config implements IUserRateLi
     private readonly userRequestTimeSecondsValue: number
 
     constructor(
-        userRequestLimit: unknown,
-        userRequestTimeSeconds: unknown
+        userRequestLimit: number,
+        userRequestTimeSeconds: number
     ) {
         super()
-        this.userRequestLimitValue = this.safelyGetNumber(userRequestLimit)
-        this.userRequestTimeSecondsValue = this.safelyGetNumber(userRequestTimeSeconds)
+        this.userRequestLimitValue = userRequestLimit
+        this.userRequestTimeSecondsValue = userRequestTimeSeconds
     }
 
     public userRequestLimit(): number {

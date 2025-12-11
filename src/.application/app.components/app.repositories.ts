@@ -1,10 +1,10 @@
-import AppInfrastructure from './app.infra.ts'
-import AppFactories from './app.factories.ts'
+import AppInfrastructure from './app.infra'
+import AppFactories from './app.factories'
 
-import AuthQueryRepository from '../../repositories/auth/auth.query.repository.ts'
-import AuthEventCommandRepository from '../../repositories/auth/auth.command.repository.ts'
-import UserQueryRepository from '../../repositories/user/user.query.repository.ts'
-import UserEventCommandRepository from '../../repositories/user/user.command.repository.ts'
+import AuthQueryRepository from '../../repositories/auth/auth.query.repository'
+import AuthEventCommandRepository from '../../repositories/auth/auth.command.repository'
+import UserQueryRepository from '../../repositories/user/user.query.repository'
+import UserEventCommandRepository from '../../repositories/user/user.command.repository'
 
 export default class AppRepositories {
     private readonly authQueryRepositoryValue: AuthQueryRepository

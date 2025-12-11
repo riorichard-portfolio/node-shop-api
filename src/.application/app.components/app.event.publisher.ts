@@ -1,5 +1,5 @@
-import AppEnvConfig from "./app.env.config.ts";
-import AppInfrastructure from "./app.infra.ts";
+import AppEnvConfig from "./app.env.config";
+import AppInfrastructure from "./app.infra";
 
 import AuthEventPublisher from '../../event.publishers/auth.event.publisher'
 import UserEventPublisher from '../../event.publishers/user.event.publisher'

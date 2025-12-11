@@ -69,8 +69,8 @@ export default class AppInfrastructure {
     }
 
     private async preparePostgres(): Promise<void> {
-        const newQueryPostgre = new QueryPostgre(this.appConfig.postgreConfig())
-        const newCommandPostgre = new CommandPostgre(this.appConfig.postgreConfig())
+        const newQueryPostgre = new QueryPostgre(this.appConfig.queryPostgreConfig())
+        const newCommandPostgre = new CommandPostgre(this.appConfig.commandPostgreConfig())
         const isQueryPostgreHealthy = await newQueryPostgre.isHealthy()
         const isCommandPostgreHealthy = await newCommandPostgre.isHealthy()
         if (!isQueryPostgreHealthy) {

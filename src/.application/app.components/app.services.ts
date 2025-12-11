@@ -1,6 +1,6 @@
-import AppInfrastructure from './app.infra.ts'
-import AppEventPublisher from './app.event.publisher.ts'
-import AppRepositories from './app.repositories.ts'
+import AppInfrastructure from './app.infra'
+import AppEventPublisher from './app.event.publisher'
+import AppRepositories from './app.repositories'
 
 import UserService from '../../services/user.service'
 

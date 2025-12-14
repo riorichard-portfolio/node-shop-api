@@ -1,7 +1,7 @@
 import { IAuthQueryRepository, IFindBySessionIdData } from "../../.domains/auth.domain/auth.repository.domain";
 import { IRepositoryResultFactory } from "../../.domains/.shared.domain/result.factory";
 
-import { IQuerySchema, ISqlQueryDB } from "../../.domains/.shared.domain/sql.db";
+import { IQuerySchema, ISqlDB } from "../../.domains/.shared.domain/sql.db";
 import { TRepositoryResults } from "../../.domains/.shared.domain/types";
 import { ISessionEntity } from "../../.domains/auth.domain/auth.entities";
 import { IAuthEntitiesFactory } from "src/.domains/auth.domain/auth.factories";
@@ -16,14 +16,14 @@ const sessionSchema = {
 export default class AuthQueryRepository implements IAuthQueryRepository {
 
     constructor(
-        private readonly sqlDb: ISqlQueryDB,
+        private readonly sqlDb: ISqlDB,
         private readonly resultFactory: IRepositoryResultFactory,
         private readonly entityFactory: IAuthEntitiesFactory
     ) { }
 
     public async findBySessionId(data: IFindBySessionIdData): Promise<TRepositoryResults<ISessionEntity>> {
         const params = [data.sessionId()]
-        const rows = await this.sqlDb.query(checkSessionSql, sessionSchema, params)
+        const rows = await this.sqlDb.query(checkSessionSql, params, sessionSchema)
         const sessionFound = rows[0]
         if (sessionFound == undefined) {
             return this.resultFactory.createNotFound()

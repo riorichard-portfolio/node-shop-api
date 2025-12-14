@@ -1,4 +1,4 @@
-import { IUserEventPublisher, UserInsertData } from "../.domains/user.domain/user.event.domain";
+import { IUserEventPublisher, IUserToCreate } from "../.domains/user.domain/user.event.domain";
 import { IUserMQTopics } from "../.domains/.shared.domain/message.broker.topics";
 
 import { IMQProducer } from "../.domains/.shared.domain/message.broker";
@@ -15,7 +15,7 @@ export default class UserEventPublisher implements IUserEventPublisher {
         this.topics = topics
     }
 
-    public async publishUserRegistered(data: UserInsertData): Promise<void> {
+    public async publishUserRegistered(data: IUserToCreate): Promise<void> {
         await this.producer.publish(
             [data],
             this.topics.userRegisteredTopic()

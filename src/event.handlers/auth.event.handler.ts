@@ -1,6 +1,8 @@
 import { IAuthEventCommandRepository } from "../.domains/auth.domain/auth.event.domain";
 import { ISessionToUpsert } from "../.domains/auth.domain/auth.event.domain";
 import { TConsumerHandler } from "../.domains/.shared.domain/message.broker";
+import { ITransactionalRepositories } from '../.domains/.shared.domain/transactional.repository'
+import { IOutboxCommandRepository } from '../.domains/.shared.domain/outbox.repository'
 
 import EventHandler from "./.base.event.handler";
 
@@ -10,9 +12,15 @@ const sessionMessageSchema = {
     userId: 'uuid'
 } as const
 
+interface AuthEventHandlerRepositories {
+    outboxCommandRepository(): IOutboxCommandRepository
+    authCommandRepository(): IAuthEventCommandRepository
+}
+
+
 export default class AuthEventHandler extends EventHandler {
     constructor(
-        private readonly repository: IAuthEventCommandRepository
+        private readonly repositories: ITransactionalRepositories<AuthEventHandlerRepositories>
     ) {
         super()
     }
@@ -28,7 +36,17 @@ export default class AuthEventHandler extends EventHandler {
                 failedDetails.push(`failedMessage: ${result.reason()} with message ${message}`)
             }
         })
-        await this.repository.bulkUpsertSession(sessions)
+        if (sessions.length > 0) {
+            this.repositories.transaction(async (transactionRepositories: AuthEventHandlerRepositories) => {
+                const insertedSessions = await transactionRepositories
+                    .authCommandRepository()
+                    .bulkUpsertSession(sessions)
+
+                await transactionRepositories
+                    .outboxCommandRepository()
+                    .bulkInsertSyncDBOutbox(insertedSessions)
+            })
+        }
         if (failedDetails.length > 0) {
             console.warn(`some sessionCreated event messages error to processed: ${failedDetails}`)
         }

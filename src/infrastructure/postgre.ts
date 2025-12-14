@@ -1,13 +1,37 @@
-import { Pool } from 'pg';
+import { Pool, PoolClient } from 'pg';
 
-import { IPostgreConfig } from '../../.domains/.shared.domain/config';
+import { IPostgreConfig } from '../.domains/.shared.domain/config';
 import {
     TParam,
     IQuerySchema,
-    TSchemaToType
-} from '../../.domains/.shared.domain/sql.db'
+    TSchemaToType,
+    ISqlDB,
+    ISqlQuery
+} from '../.domains/.shared.domain/sql.db'
 
-export default class PostgreDatabase {
+class TransactionQueries implements ISqlQuery {
+    constructor(
+        private readonly poolClient: PoolClient
+    ) { }
+
+    public async query<const QuerySchema extends IQuerySchema>(sql: string, params: TParam[], schema: QuerySchema): Promise<TSchemaToType<QuerySchema>[]> {
+        const queryResult = await this.poolClient.query({
+            text: sql,
+            values: params
+        });
+        const firstRow = queryResult.rows[0]
+        if (firstRow != undefined) {
+            for (const [rowColumn, rowColumnType] of Object.entries(schema)) {
+                if (typeof firstRow[rowColumn] !== rowColumnType) {
+                    throw new Error(`invalid column: column type ${rowColumn} not match with ${rowColumnType} in schema ${schema}`)
+                }
+            }
+        }
+        return queryResult.rows
+    }
+}
+
+export default class Postgre implements ISqlDB {
     protected readonly pool: Pool;
 
     constructor(config: IPostgreConfig) {
@@ -59,7 +83,7 @@ export default class PostgreDatabase {
         }
     }
 
-    public async query<const T extends IQuerySchema>(sql: string, schema: T, params: TParam[]): Promise<TSchemaToType<T>[]> {
+    public async query<const QuerySchema extends IQuerySchema>(sql: string, params: TParam[], schema: QuerySchema): Promise<TSchemaToType<QuerySchema>[]> {
         const client = await this.pool.connect();
         try {
             const queryResult = await client.query({
@@ -75,7 +99,22 @@ export default class PostgreDatabase {
                 }
             }
             return queryResult.rows
+        } finally {
+            client.release();
+        }
+    }
 
+    public async sqlTransaction(executeQueries: (transactionQueries: ISqlQuery) => Promise<void>): Promise<void> {
+        const client = await this.pool.connect();
+        try {
+            await client.query('begin')
+            const transactionQueries = new TransactionQueries(client)
+            await executeQueries(transactionQueries)
+            await client.query('commit')
+        } catch (error) {
+            await client.query('rollback')
+            if (error instanceof Error) throw new Error(`invalid transaction operation with error: ${error.message}`)
+            throw new Error(`invalid transaction operation with unknown error: \n${error}`)
         } finally {
             client.release();
         }

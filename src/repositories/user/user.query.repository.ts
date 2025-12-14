@@ -1,7 +1,7 @@
 import { IFindByEmailData, IUserQueryRepository } from "../../.domains/user.domain/user.repository.domain";
 import { IRepositoryResultFactory } from "../../.domains/.shared.domain/result.factory";
 
-import { IQuerySchema, ISqlQueryDB } from "../../.domains/.shared.domain/sql.db";
+import { IQuerySchema, ISqlDB } from "../../.domains/.shared.domain/sql.db";
 import { TRepositoryResults } from "../../.domains/.shared.domain/types";
 import { IUserEntity } from "../../.domains/user.domain/user.entities";
 import { IUserEntitiesFactory } from "../../.domains/user.domain/user.factories";
@@ -17,7 +17,7 @@ const userFindByEmailSql = 'select user_id as "userId", email,fullname,hashed_pa
 
 export default class UserQueryRepository implements IUserQueryRepository {
     constructor(
-        private readonly sqlDb: ISqlQueryDB,
+        private readonly sqlDb: ISqlDB,
         private readonly resultFactory: IRepositoryResultFactory,
         private readonly entityFactory: IUserEntitiesFactory
     ) { }
@@ -26,8 +26,8 @@ export default class UserQueryRepository implements IUserQueryRepository {
         const params = [data.email()]
         const rows = await this.sqlDb.query(
             userFindByEmailSql,
-            userFindByEmailSchema,
-            params
+            params,
+            userFindByEmailSchema
         )
         const firstRow = rows[0]
         if (firstRow == undefined) {

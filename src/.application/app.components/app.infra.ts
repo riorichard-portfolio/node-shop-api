@@ -115,10 +115,12 @@ export default class AppInfrastructure {
     }
 
     public async prepareInfrastructure(): Promise<void> {
-        await this.preparePostgres()
-        await this.prepareKafka()
-        await this.prepareRedis()
-        await this.prepareUserRateLimiter()
+        await Promise.all([
+            this.preparePostgres(),
+            this.prepareKafka(),
+            this.prepareRedis(),
+            this.prepareUserRateLimiter()
+        ])
         this.hasInfrastructurePrepared = true
     }
 
@@ -198,5 +200,7 @@ export default class AppInfrastructure {
     public localUserRateLimiter(): LocalUserRateLimiter {
         return this.localUserRateLimiterInfra
     }
+
+    
 
 }

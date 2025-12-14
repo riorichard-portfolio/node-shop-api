@@ -14,12 +14,12 @@ export default class QueryPostgre extends PostgreDatabase implements ISqlQueryDB
         super(config)
     }
 
-    public async query<const T extends IQuerySchema>(sql: string, schema: T, params: TParam[] = []): Promise<TSchemaToType<T>[]> {
+    public async query<const T extends IQuerySchema>(sql: string, schema: T, params: TParam[]): Promise<TSchemaToType<T>[]> {
         const client = await this.pool.connect();
         try {
             const queryResult = await client.query({
                 text: sql,
-                values: [...params]
+                values: params
             });
             const firstRow = queryResult.rows[0]
             if (firstRow != undefined) {

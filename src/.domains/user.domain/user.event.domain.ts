@@ -5,14 +5,19 @@ export interface IUserToCreate {
     fullname: string
 }
 
-export interface IUserToSync extends IUserToCreate { }
+export interface IReturnedCreatedUser{
+    userId: string
+    email: string
+    hashedPassword: string
+    fullname: string
+}
 
 export interface IUserEventPublisher {
     publishUserRegistered(data: IUserToCreate): Promise<void>
 }
 
 export interface IUserEventCommandRepository {
-    bulkInsertUser(users: IUserToCreate[]): Promise<IUserToSync[]>
+    bulkInsertUser(users: IUserToCreate[]): Promise<IReturnedCreatedUser[]>
 }
 
 export interface IUserSyncDBOutboxRepository {

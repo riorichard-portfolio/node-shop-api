@@ -1,17 +1,11 @@
-import { IFindByEmailData, IUserQueryRepository } from "../../.domains/user.domain/user.repository.domain";
+import { IFindByEmailData, IUserQueryRepository } from "../../.domains/user.domain/user.query.repository";
 import { IRepositoryResultFactory } from "../../.domains/.shared.domain/result.factory";
 
-import { IQuerySchema, ISqlDB } from "../../.domains/.shared.domain/sql.db";
+import { ISqlDB } from "../../.domains/.shared.domain/sql.db";
 import { TRepositoryResults } from "../../.domains/.shared.domain/types";
 import { IUserEntity } from "../../.domains/user.domain/user.entities";
 import { IUserEntitiesFactory } from "../../.domains/user.domain/user.factories";
-
-const userFindByEmailSchema = {
-    userId: 'string',
-    email: 'string',
-    fullname: 'string',
-    hashedPassword: 'string'
-} as const satisfies IQuerySchema
+import { userFindByEmailSchema } from "./.user.repository.schema"
 
 const userFindByEmailSql = 'select user_id as "userId", email,fullname,hashed_password as "hashedPassword" from users where email = $1'
 

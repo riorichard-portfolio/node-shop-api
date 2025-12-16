@@ -1,5 +1,5 @@
-import { IAuthEventCommandRepository, IAuthSyncDBOutboxCommandRepository } from "../.domains/auth.domain/auth.event.domain";
-import { ISessionToUpsert } from "../.domains/auth.domain/auth.event.domain";
+import { IAuthEventCommandRepository, IAuthSyncDBOutboxCommandRepository } from "../.domains/auth.domain/auth.event";
+import { ISessionToCreate } from "../.domains/auth.domain/auth.event";
 import { TConsumerHandler } from "../.domains/.shared.domain/message.broker";
 import { ITransactionalRepositories } from '../.domains/.shared.domain/transactional.repository'
 
@@ -25,7 +25,7 @@ export default class AuthEventHandler extends EventHandler {
     }
 
     public sessionCreated: TConsumerHandler = async (messages: string[]) => {
-        const sessions: ISessionToUpsert[] = []
+        const sessions: ISessionToCreate[] = []
         const failedDetails: string[] = []
         messages.forEach(message => {
             const result = this.safelyGetMessageObject(message, sessionMessageSchema)

@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 
 import ExpressHandler from '../express.base.handler';
 
-import { IAuthUsecase } from "../../.domains/auth.domain/auth.usecase.domain";
+import { IAuthUsecase } from "../../.domains/auth.domain/auth.usecase";
 import { IAuthInputDTOFactory } from 'src/.domains/auth.domain/auth.factories';
 
 

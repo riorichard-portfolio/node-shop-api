@@ -15,7 +15,7 @@ import {
 } from 'src/.domains/user.domain/user.output.dto';
 
 import { IUserEventPublisher } from "../.domains/user.domain/user.event.domain";
-import { IUserQueryRepository } from "../.domains/user.domain/user.repository.domain";
+import { IUserQueryRepository } from "../.domains/user.domain/user.query.repository";
 import { TApplicationResults } from "../.domains/.shared.domain/types";
 import { IBcryptHasher } from '../.domains/.shared.domain/bcrypt';
 

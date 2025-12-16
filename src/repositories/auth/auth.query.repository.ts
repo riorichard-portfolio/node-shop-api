@@ -1,4 +1,4 @@
-import { IAuthQueryRepository, IFindBySessionIdData } from "../../.domains/auth.domain/auth.repository.domain";
+import { IAuthQueryRepository, IFindBySessionIdData } from "../../.domains/auth.domain/auth.query.repository";
 import { IRepositoryResultFactory } from "../../.domains/.shared.domain/result.factory";
 
 import { ISqlDB } from "../../.domains/.shared.domain/sql.db";

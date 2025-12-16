@@ -1,8 +1,8 @@
 import {
     IAuthEventCommandRepository,
-    IReturnedInsertedSession,
-    ISessionToUpsert
-} from "../../.domains/auth.domain/auth.event.domain";
+    IReturnedCreatedSession,
+    ISessionToCreate
+} from "../../.domains/auth.domain/auth.event";
 
 import { ITransactionQueries } from "../../.domains/.shared.domain/sql.db";
 import { sessionSchema } from "./.auth.repository.schema";
@@ -15,7 +15,7 @@ export default class AuthEventCommandRepository implements IAuthEventCommandRepo
         private readonly transactionalSql: ITransactionQueries,
     ) { }
 
-    public async bulkUpsertSession(sessions: ISessionToUpsert[]): Promise<IReturnedInsertedSession[]> {
+    public async bulkUpsertSession(sessions: ISessionToCreate[]): Promise<IReturnedCreatedSession[]> {
         const sqlParams = this.transactionalSql.createSqlParams()
         let valuesSqlString: string = ''
         sessions.forEach((session, index) => {

@@ -1,4 +1,4 @@
-import { IAuthSyncDBOutboxCommandRepository, ISessionToSync } from "../../.domains/auth.domain/auth.event.domain";
+import { IAuthSyncDBOutboxCommandRepository, ISessionToSync } from "../../.domains/auth.domain/auth.outbox.repository";
 
 import { ITransactionQueries } from "../../.domains/.shared.domain/sql.db";
 

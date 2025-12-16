@@ -1,8 +1,7 @@
-import { IAuthEventCommandRepository } from "../.domains/auth.domain/auth.event.domain";
+import { IAuthEventCommandRepository, IAuthSyncDBOutboxCommandRepository } from "../.domains/auth.domain/auth.event.domain";
 import { ISessionToUpsert } from "../.domains/auth.domain/auth.event.domain";
 import { TConsumerHandler } from "../.domains/.shared.domain/message.broker";
 import { ITransactionalRepositories } from '../.domains/.shared.domain/transactional.repository'
-import { IOutboxCommandRepository } from '../.domains/.shared.domain/outbox.repository'
 
 import EventHandler from "./.base.event.handler";
 
@@ -13,7 +12,7 @@ const sessionMessageSchema = {
 } as const
 
 interface AuthEventHandlerRepositories {
-    outboxCommandRepository(): IOutboxCommandRepository
+    outboxSyncDBCommandRepository(): IAuthSyncDBOutboxCommandRepository
     authCommandRepository(): IAuthEventCommandRepository
 }
 
@@ -41,10 +40,11 @@ export default class AuthEventHandler extends EventHandler {
                 const insertedSessions = await transactionRepositories
                     .authCommandRepository()
                     .bulkUpsertSession(sessions)
-
-                await transactionRepositories
-                    .outboxCommandRepository()
-                    .bulkInsertSyncDBOutbox(insertedSessions)
+                if (insertedSessions.length > 0) {
+                    await transactionRepositories
+                        .outboxSyncDBCommandRepository()
+                        .bulkInsertSessionToSync(insertedSessions)
+                }
             })
         }
         if (failedDetails.length > 0) {

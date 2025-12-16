@@ -4,12 +4,26 @@ export interface ISessionToUpsert {
     expiredAt: number
 }
 
-export interface ISessionToSync extends ISessionToUpsert { }
+export interface IReturnedInsertedSession {
+    sessionId: string
+    userId: string
+    expiredAt: number
+}
 
 export interface IAuthEventPublisher {
     publishSessionCreated(data: ISessionToUpsert): Promise<void>
 }
 
 export interface IAuthEventCommandRepository {
-    bulkUpsertSession(sessions: ISessionToUpsert[]): Promise<ISessionToSync[]>
+    bulkUpsertSession(sessions: ISessionToUpsert[]): Promise<IReturnedInsertedSession[]>
+}
+
+export interface ISessionToSync {
+    sessionId: string
+    userId?: string
+    expiredAt?: number
+}
+
+export interface IAuthSyncDBOutboxCommandRepository {
+    bulkInsertSessionToSync(syncData: ISessionToSync[]): Promise<void>
 }

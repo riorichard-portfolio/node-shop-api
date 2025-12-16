@@ -14,3 +14,7 @@ export interface IUserEventPublisher {
 export interface IUserEventCommandRepository {
     bulkInsertUser(users: IUserToCreate[]): Promise<IUserToSync[]>
 }
+
+export interface IUserSyncDBOutboxRepository {
+    bulkInsertUserToSync(syncData: IUserToSync[]): Promise<void>
+}

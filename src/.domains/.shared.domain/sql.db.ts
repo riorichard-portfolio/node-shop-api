@@ -1,4 +1,4 @@
-export type TParam = string | number | boolean
+export type TParam = string | number | boolean | null
 export interface IQuerySchema {
     [key: string]: 'string' | 'number' | 'boolean'
 }
@@ -12,14 +12,15 @@ export type TSchemaToType<T extends IQuerySchema> = {
 }
 
 export interface ISqlQuery {
+    createSqlParams(): TParam[]
     query<const QuerySchema extends IQuerySchema>(
         sql: string,
         params: TParam[], // force to give any params , even limit or offset
-        schema: QuerySchema
-    ): Promise<TSchemaToType<QuerySchema>[]>
+        schema?: QuerySchema
+    ): Promise<typeof schema extends undefined ? null : TSchemaToType<QuerySchema>[]>
 }
 
-export interface ITransactionQueries extends ISqlQuery {}
+export interface ITransactionQueries extends ISqlQuery { }
 
 export interface ISqlDB extends ISqlQuery {
     sqlTransaction(executeQueries: (transactionQueries: ITransactionQueries) => Promise<void>): Promise<void>

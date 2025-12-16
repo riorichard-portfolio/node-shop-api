@@ -1,29 +1,29 @@
-import { IAuthEventCommandRepository, ISessionToSync, ISessionToUpsert } from "../../.domains/auth.domain/auth.event.domain";
+import {
+    IAuthEventCommandRepository,
+    IReturnedInsertedSession,
+    ISessionToUpsert
+} from "../../.domains/auth.domain/auth.event.domain";
 
 import { ITransactionQueries } from "../../.domains/.shared.domain/sql.db";
+import { sessionSchema } from "./.auth.repository.schema";
 
-const bulkUpsertSessionSqlStart = ` INSERT INTO sessions (session_id, user_id, expired_at) VALUES`
-const bulkUpsertSessionSqlEnd = `
-ON CONFLICT (user_id) 
-DO UPDATE SET 
-    session_id = EXCLUDED.session_id,
-    expired_at = EXCLUDED.expired_at,
-    updated_at = NOW()
-`
+const bulkInsetSessionSql = "INSERT INTO sessions (session_id, user_id, expired_at) VALUES"
+const returningInsetedSessionSql = "RETURNING session_id as sessionId, user_id as userId,expired_at as expiredAt ;"
 
 export default class AuthEventCommandRepository implements IAuthEventCommandRepository {
     constructor(
         private readonly transactionalSql: ITransactionQueries,
     ) { }
 
-    public async bulkUpsertSession(sessions: ISessionToUpsert[]): Promise<ISessionToSync[]> {
-        const sqlParams: string[] = []
+    public async bulkUpsertSession(sessions: ISessionToUpsert[]): Promise<IReturnedInsertedSession[]> {
+        const sqlParams = this.transactionalSql.createSqlParams()
         let valuesSqlString: string = ''
         sessions.forEach((session, index) => {
             valuesSqlString += `($${index * 3 + 1},$${(index * 3) + 2},$${(index * 3) + 3}) ${index != sessions.length - 1 ? ',' : ''}`
-            sqlParams.push(session.sessionId, session.userId, session.expiredAt.toString())
+            sqlParams.push(session.sessionId, session.userId, session.expiredAt)
         })
-        const finalSql = bulkUpsertSessionSqlStart + valuesSqlString + bulkUpsertSessionSqlEnd
-        await this.transactionalSql.query(finalSql, sqlParams)
+        const finalSql = bulkInsetSessionSql + valuesSqlString + returningInsetedSessionSql
+        const insertedSessions = await this.transactionalSql.query(finalSql, sqlParams, sessionSchema)
+        return insertedSessions
     }
 }

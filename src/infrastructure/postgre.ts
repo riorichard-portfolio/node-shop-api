@@ -21,7 +21,10 @@ class TransactionQueries implements ISqlQuery {
         params: TParam[],
         schema: QuerySchema
     ): Promise<TSchemaToType<QuerySchema>[]>;
-    public async query<const QuerySchema extends IQuerySchema>(sql: string, params: TParam[], schema?: QuerySchema): Promise<typeof schema extends undefined ? null : TSchemaToType<QuerySchema>[]> {
+    public async query<const QuerySchema extends IQuerySchema>(
+        sql: string,
+        params: TParam[],
+        schema?: QuerySchema): Promise<null | TSchemaToType<QuerySchema>[]> {
         const queryResult = await this.poolClient.query({
             text: sql,
             values: params
@@ -96,13 +99,24 @@ export default class Postgre implements ISqlDB {
         }
     }
 
-    public async query<const QuerySchema extends IQuerySchema>(sql: string, params: TParam[], schema: QuerySchema): Promise<TSchemaToType<QuerySchema>[]> {
+    // Overload signatures
+    public async query(sql: string, params: TParam[]): Promise<null>;
+    public async query<const QuerySchema extends IQuerySchema>(
+        sql: string,
+        params: TParam[],
+        schema: QuerySchema
+    ): Promise<TSchemaToType<QuerySchema>[]>;
+    public async query<const QuerySchema extends IQuerySchema>(
+        sql: string,
+        params: TParam[],
+        schema?: QuerySchema): Promise<null | TSchemaToType<QuerySchema>[]> {
         const client = await this.pool.connect();
         try {
             const queryResult = await client.query({
                 text: sql,
                 values: params
             });
+            if (schema == undefined) return null
             const firstRow = queryResult.rows[0]
             if (firstRow != undefined) {
                 for (const [rowColumn, rowColumnType] of Object.entries(schema)) {

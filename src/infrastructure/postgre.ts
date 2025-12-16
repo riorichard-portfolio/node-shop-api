@@ -14,11 +14,19 @@ class TransactionQueries implements ISqlQuery {
         private readonly poolClient: PoolClient
     ) { }
 
-    public async query<const QuerySchema extends IQuerySchema>(sql: string, params: TParam[], schema: QuerySchema): Promise<TSchemaToType<QuerySchema>[]> {
+    // Overload signatures
+    public async query(sql: string, params: TParam[]): Promise<null>;
+    public async query<const QuerySchema extends IQuerySchema>(
+        sql: string,
+        params: TParam[],
+        schema: QuerySchema
+    ): Promise<TSchemaToType<QuerySchema>[]>;
+    public async query<const QuerySchema extends IQuerySchema>(sql: string, params: TParam[], schema?: QuerySchema): Promise<typeof schema extends undefined ? null : TSchemaToType<QuerySchema>[]> {
         const queryResult = await this.poolClient.query({
             text: sql,
             values: params
         });
+        if (schema == undefined) return null
         const firstRow = queryResult.rows[0]
         if (firstRow != undefined) {
             for (const [rowColumn, rowColumnType] of Object.entries(schema)) {
@@ -29,6 +37,11 @@ class TransactionQueries implements ISqlQuery {
         }
         return queryResult.rows
     }
+
+    public createSqlParams(): TParam[] {
+        return []
+    }
+
 }
 
 export default class Postgre implements ISqlDB {
@@ -118,5 +131,9 @@ export default class Postgre implements ISqlDB {
         } finally {
             client.release();
         }
+    }
+
+    public createSqlParams(): TParam[] {
+        return []
     }
 }

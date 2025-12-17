@@ -1,6 +1,6 @@
 import AppInfrastructure from './app.infra'
 import AppEventPublisher from './app.event.publisher'
-import AppRepositories from './app.repositories'
+import AppRepositories from './app.query.repositories'
 
 import UserService from '../../services/user.service'
 

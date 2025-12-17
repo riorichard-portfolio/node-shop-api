@@ -5,6 +5,6 @@ export interface IUserToSync {
     fullname?: string
 }
 
-export interface IUserSyncDBOutboxRepository {
+export interface IUserSyncDBOutboxCommandRepository {
     bulkInsertUserToSync(syncData: IUserToSync[]): Promise<void>
 }

@@ -1,6 +1,8 @@
 import { IUserEventCommandRepository } from "../.domains/user.domain/user.event";
+import { IUserSyncDBOutboxCommandRepository } from "src/.domains/user.domain/user.outbox.repository";
 import { IUserToInsert } from "../.domains/user.domain/user.event";
 import { TConsumerHandler } from "../.domains/.shared.domain/message.broker";
+import { ITransactionalRepositories } from '../.domains/.shared.domain/transactional.repositories'
 
 import EventHandler from "./.base.event.handler";
 
@@ -11,9 +13,14 @@ const userMessageSchema = {
     fullname: 'string'
 } as const
 
+interface IUserEventHandlerRepositories {
+    userOutboxSyncDBCommandRepository(): IUserSyncDBOutboxCommandRepository
+    userCommandRepository(): IUserEventCommandRepository
+}
+
 export default class UserEventHandler extends EventHandler {
     constructor(
-        private readonly repository: IUserEventCommandRepository
+        private readonly repositories: ITransactionalRepositories<IUserEventHandlerRepositories>
     ) {
         super()
     }
@@ -29,7 +36,18 @@ export default class UserEventHandler extends EventHandler {
                 failedDetails.push(`failedMessage: ${result.reason()} with message ${message}`)
             }
         })
-        await this.repository.bulkInsertUser(users)
+        if (users.length > 0) {
+            this.repositories.transaction(async (transactionRepositories: IUserEventHandlerRepositories) => {
+                const insertedUsers = await transactionRepositories
+                    .userCommandRepository()
+                    .bulkInsertUser(users)
+                if (insertedUsers.length > 0) {
+                    await transactionRepositories
+                        .userOutboxSyncDBCommandRepository()
+                        .bulkInsertUserToSync(insertedUsers)
+                }
+            })
+        }
         if (failedDetails.length > 0) {
             console.warn(`some userRegistered event messages error to processed: ${failedDetails}`)
         }

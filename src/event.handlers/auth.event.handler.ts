@@ -2,7 +2,7 @@ import { IAuthEventCommandRepository } from "../.domains/auth.domain/auth.event"
 import { IAuthSyncDBOutboxCommandRepository } from '../.domains/auth.domain/auth.outbox.repository'
 import { ISessionToInsert } from "../.domains/auth.domain/auth.event";
 import { TConsumerHandler } from "../.domains/.shared.domain/message.broker";
-import { ITransactionalRepositories } from '../.domains/.shared.domain/transactional.repository'
+import { ITransactionalRepositories } from '../.domains/.shared.domain/transactional.repositories'
 
 import EventHandler from "./.base.event.handler";
 
@@ -12,15 +12,15 @@ const sessionMessageSchema = {
     userId: 'uuid',
 } as const
 
-interface AuthEventHandlerRepositories {
-    outboxSyncDBCommandRepository(): IAuthSyncDBOutboxCommandRepository
+interface IAuthEventHandlerRepositories {
+    authOutboxSyncDBCommandRepository(): IAuthSyncDBOutboxCommandRepository
     authCommandRepository(): IAuthEventCommandRepository
 }
 
 
 export default class AuthEventHandler extends EventHandler {
     constructor(
-        private readonly repositories: ITransactionalRepositories<AuthEventHandlerRepositories>
+        private readonly repositories: ITransactionalRepositories<IAuthEventHandlerRepositories>
     ) {
         super()
     }
@@ -37,13 +37,13 @@ export default class AuthEventHandler extends EventHandler {
             }
         })
         if (sessions.length > 0) {
-            this.repositories.transaction(async (transactionRepositories: AuthEventHandlerRepositories) => {
+            this.repositories.transaction(async (transactionRepositories: IAuthEventHandlerRepositories) => {
                 const insertedSessions = await transactionRepositories
                     .authCommandRepository()
                     .bulkUpsertSession(sessions)
                 if (insertedSessions.length > 0) {
                     await transactionRepositories
-                        .outboxSyncDBCommandRepository()
+                        .authOutboxSyncDBCommandRepository()
                         .bulkInsertSessionToSync(insertedSessions)
                 }
             })

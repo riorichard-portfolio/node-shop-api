@@ -1,8 +1,7 @@
 import AppEnvConfig from "./app.env.config";
 
 import Bcrypt from "../../infrastructure/bcrypt";
-import QueryPostgre from '../../infrastructure/postgre/query.postgre'
-import CommandPostgre from '../../infrastructure/postgre/command.postgre'
+import Postgre from '../../infrastructure/postgre'
 import KafkaMQ from "../../infrastructure/kafka";
 import RedisCache from '../../infrastructure/redis/.redis'
 import UserRateLimiter from '../../infrastructure/redis/user.rate.limiter'
@@ -32,8 +31,8 @@ export default class AppInfrastructure {
     private readonly repositoryResultFactoryInfra: RepositoryResultFactory
     private readonly authJwtInfra: AuthJwt
 
-    private queryPostgreInfra: QueryPostgre | null = null
-    private commandPostgreInfra: CommandPostgre | null = null
+    private queryPostgreInfra: Postgre | null = null
+    private commandPostgreInfra: Postgre | null = null
     private kafkaInfra: KafkaMQ | null = null
     private redisInfra: RedisCache | null = null
     private userRateLimiterInfra: UserRateLimiter | null = null
@@ -69,8 +68,8 @@ export default class AppInfrastructure {
     }
 
     private async preparePostgres(): Promise<void> {
-        const newQueryPostgre = new QueryPostgre(this.appConfig.queryPostgreConfig())
-        const newCommandPostgre = new CommandPostgre(this.appConfig.commandPostgreConfig())
+        const newQueryPostgre = new Postgre(this.appConfig.queryPostgreConfig())
+        const newCommandPostgre = new Postgre(this.appConfig.commandPostgreConfig())
         const isQueryPostgreHealthy = await newQueryPostgre.isHealthy()
         const isCommandPostgreHealthy = await newCommandPostgre.isHealthy()
         if (!isQueryPostgreHealthy) {
@@ -157,7 +156,7 @@ export default class AppInfrastructure {
     }
 
 
-    public commandPostgre(): CommandPostgre {
+    public commandPostgre(): Postgre {
         this.verifyInfrastructurePreparation()
         if (this.commandPostgreInfra == null) {
             throw new Error(commandPostgreNotPreparedError)
@@ -165,7 +164,7 @@ export default class AppInfrastructure {
         return this.commandPostgreInfra
     }
 
-    public queryPostgre(): QueryPostgre {
+    public queryPostgre(): Postgre {
         this.verifyInfrastructurePreparation()
         if (this.queryPostgreInfra == null) {
             throw new Error(queryPostgreNotPreparedError)

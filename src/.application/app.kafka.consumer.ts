@@ -1,6 +1,6 @@
 import AppInfrastructure from "./app.components/app.infra";
 import AppEnvConfig from "./app.components/app.env.config";
-import AppRepositories from "./app.components/app.repositories";
+import AppTransactionalRepositories from './app.components/app.transactional.repositories'
 
 import AuthEventHandler from '../event.handlers/auth.event.handler'
 import UserEventHandler from '../event.handlers/user.event.handler'
@@ -12,13 +12,13 @@ export default class AppKafkaConsumer {
     constructor(
         private readonly appInfra: AppInfrastructure,
         private readonly appConfig: AppEnvConfig,
-        appRepositories: AppRepositories
+        appTransactionalRepositories: AppTransactionalRepositories
     ) {
         this.authEventHandler = new AuthEventHandler(
-            appRepositories.authEventCommandRepository()
+            appTransactionalRepositories
         )
         this.userEventHandler = new UserEventHandler(
-            appRepositories.userEventCommandRepository()
+            appTransactionalRepositories
         )
         this.setupKafkaConsumer()
     }

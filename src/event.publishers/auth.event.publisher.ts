@@ -1,4 +1,4 @@
-import { IAuthEventPublisher, ISessionToCreate } from "../.domains/auth.domain/auth.event";
+import { IAuthEventPublisher, ISessionToInsert } from "../.domains/auth.domain/auth.event";
 import { IAuthMQTopics } from "../.domains/.shared.domain/message.broker.topics";
 
 import { IMQProducer } from "../.domains/.shared.domain/message.broker";
@@ -15,7 +15,7 @@ export default class AuthEventPublisher implements IAuthEventPublisher {
         this.topics = topics
     }
 
-    public async publishSessionCreated(data: ISessionToCreate): Promise<void> {
+    public async publishSessionCreated(data: ISessionToInsert): Promise<void> {
         await this.producer.publish(
             [data],
             this.topics.sessionCreatedTopic(),

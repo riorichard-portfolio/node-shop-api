@@ -1,6 +1,6 @@
 import { IQuerySchema } from "../../.domains/.shared.domain/sql.db";
 
-export const userFindByEmailSchema = {
+export const userSchema = {
     userId: 'string',
     email: 'string',
     fullname: 'string',

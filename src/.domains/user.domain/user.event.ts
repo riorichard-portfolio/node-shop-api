@@ -1,4 +1,4 @@
-export interface IUserToCreate {
+export interface IUserToInsert {
     userId: string
     email: string
     hashedPassword: string
@@ -13,13 +13,9 @@ export interface IReturnedCreatedUser{
 }
 
 export interface IUserEventPublisher {
-    publishUserRegistered(data: IUserToCreate): Promise<void>
+    publishUserRegistered(data: IUserToInsert): Promise<void>
 }
 
 export interface IUserEventCommandRepository {
-    bulkInsertUser(users: IUserToCreate[]): Promise<IReturnedCreatedUser[]>
-}
-
-export interface IUserSyncDBOutboxRepository {
-    bulkInsertUserToSync(syncData: IUserToSync[]): Promise<void>
+    bulkInsertUser(users: IUserToInsert[]): Promise<IReturnedCreatedUser[]>
 }

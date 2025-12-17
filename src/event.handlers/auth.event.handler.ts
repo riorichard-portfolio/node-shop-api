@@ -1,5 +1,6 @@
-import { IAuthEventCommandRepository, IAuthSyncDBOutboxCommandRepository } from "../.domains/auth.domain/auth.event";
-import { ISessionToCreate } from "../.domains/auth.domain/auth.event";
+import { IAuthEventCommandRepository } from "../.domains/auth.domain/auth.event";
+import { IAuthSyncDBOutboxCommandRepository } from '../.domains/auth.domain/auth.outbox.repository'
+import { ISessionToInsert } from "../.domains/auth.domain/auth.event";
 import { TConsumerHandler } from "../.domains/.shared.domain/message.broker";
 import { ITransactionalRepositories } from '../.domains/.shared.domain/transactional.repository'
 
@@ -8,7 +9,7 @@ import EventHandler from "./.base.event.handler";
 const sessionMessageSchema = {
     expiredAt: 'number',
     sessionId: 'uuid',
-    userId: 'uuid'
+    userId: 'uuid',
 } as const
 
 interface AuthEventHandlerRepositories {
@@ -25,7 +26,7 @@ export default class AuthEventHandler extends EventHandler {
     }
 
     public sessionCreated: TConsumerHandler = async (messages: string[]) => {
-        const sessions: ISessionToCreate[] = []
+        const sessions: ISessionToInsert[] = []
         const failedDetails: string[] = []
         messages.forEach(message => {
             const result = this.safelyGetMessageObject(message, sessionMessageSchema)

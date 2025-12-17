@@ -13,11 +13,12 @@ export type TSchemaToType<T extends IQuerySchema> = {
 
 export interface ISqlQuery {
     createSqlParams(): TParam[]
+    query(sql: string, params: TParam[]): Promise<null>
     query<const QuerySchema extends IQuerySchema>(
         sql: string,
         params: TParam[], // force to give any params , even limit or offset
         schema?: QuerySchema
-    ): Promise<typeof schema extends undefined ? null : TSchemaToType<QuerySchema>[]>
+    ): Promise<TSchemaToType<QuerySchema>[]>
 }
 
 export interface ITransactionQueries extends ISqlQuery { }

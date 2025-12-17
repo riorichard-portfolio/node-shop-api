@@ -20,7 +20,7 @@ import { IAuthEventPublisher } from "../.domains/auth.domain/auth.event";
 import { IAuthQueryRepository } from "../.domains/auth.domain/auth.query.repository";
 import { IBcryptVerifier } from "../.domains/.shared.domain/bcrypt";
 import { TApplicationResults } from "../.domains/.shared.domain/types";
-import { IUserService } from "../.domains/user.domain/user.service.domain";
+import { IUserService } from "../.domains/user.domain/user.service";
 import { IApplicationResultFactory } from '../.domains/.shared.domain/result.factory';
 import { IAuthOutputDTOFactory } from '../.domains/auth.domain/auth.factories';
 import { IAuthTokenCreator } from '../.domains/auth.domain/auth.token.management';

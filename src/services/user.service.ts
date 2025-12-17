@@ -2,7 +2,7 @@ import crypto from 'crypto'
 
 import {
     IUserService
-} from "../.domains/user.domain/user.service.domain";
+} from "../.domains/user.domain/user.service";
 import { IApplicationResultFactory } from 'src/.domains/.shared.domain/result.factory';
 import {
     ICreateNewUserInputDTO,
@@ -14,7 +14,7 @@ import {
     TFindUserByEmailFailedType
 } from 'src/.domains/user.domain/user.output.dto';
 
-import { IUserEventPublisher } from "../.domains/user.domain/user.event.domain";
+import { IUserEventPublisher } from "../.domains/user.domain/user.event";
 import { IUserQueryRepository } from "../.domains/user.domain/user.query.repository";
 import { TApplicationResults } from "../.domains/.shared.domain/types";
 import { IBcryptHasher } from '../.domains/.shared.domain/bcrypt';

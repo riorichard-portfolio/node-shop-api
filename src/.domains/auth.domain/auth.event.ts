@@ -1,4 +1,4 @@
-export interface ISessionToCreate {
+export interface ISessionToInsert {
     sessionId: string
     userId: string
     expiredAt: number
@@ -11,9 +11,9 @@ export interface IReturnedCreatedSession {
 }
 
 export interface IAuthEventPublisher {
-    publishSessionCreated(data: ISessionToCreate): Promise<void>
+    publishSessionCreated(data: ISessionToInsert): Promise<void>
 }
 
 export interface IAuthEventCommandRepository {
-    bulkUpsertSession(sessions: ISessionToCreate[]): Promise<IReturnedCreatedSession[]>
+    bulkUpsertSession(sessions: ISessionToInsert[]): Promise<IReturnedCreatedSession[]>
 }

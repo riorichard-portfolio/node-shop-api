@@ -1,5 +1,5 @@
-import { IUserEventCommandRepository } from "../.domains/user.domain/user.event.domain";
-import { IUserToCreate } from "../.domains/user.domain/user.event.domain";
+import { IUserEventCommandRepository } from "../.domains/user.domain/user.event";
+import { IUserToInsert } from "../.domains/user.domain/user.event";
 import { TConsumerHandler } from "../.domains/.shared.domain/message.broker";
 
 import EventHandler from "./.base.event.handler";
@@ -19,7 +19,7 @@ export default class UserEventHandler extends EventHandler {
     }
 
     public userRegistered: TConsumerHandler = async (messages: string[]) => {
-        const users: IUserToCreate[] = []
+        const users: IUserToInsert[] = []
         const failedDetails: string[] = []
         messages.forEach(message => {
             const result = this.safelyGetMessageObject(message, userMessageSchema)

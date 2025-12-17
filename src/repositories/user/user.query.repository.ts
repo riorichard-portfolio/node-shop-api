@@ -5,7 +5,7 @@ import { ISqlDB } from "../../.domains/.shared.domain/sql.db";
 import { TRepositoryResults } from "../../.domains/.shared.domain/types";
 import { IUserEntity } from "../../.domains/user.domain/user.entities";
 import { IUserEntitiesFactory } from "../../.domains/user.domain/user.factories";
-import { userFindByEmailSchema } from "./.user.repository.schema"
+import { userSchema } from "./.user.repository.schema"
 
 const userFindByEmailSql = 'select user_id as "userId", email,fullname,hashed_password as "hashedPassword" from users where email = $1'
 
@@ -21,7 +21,7 @@ export default class UserQueryRepository implements IUserQueryRepository {
         const rows = await this.sqlDb.query(
             userFindByEmailSql,
             params,
-            userFindByEmailSchema
+            userSchema
         )
         const firstRow = rows[0]
         if (firstRow == undefined) {

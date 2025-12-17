@@ -15,10 +15,10 @@ export default class AppKafkaConsumer {
         appTransactionalRepositories: AppTransactionalRepositories
     ) {
         this.authEventHandler = new AuthEventHandler(
-            appTransactionalRepositories
+            appTransactionalRepositories.authTransactionalRepositories()
         )
         this.userEventHandler = new UserEventHandler(
-            appTransactionalRepositories
+            appTransactionalRepositories.userTransactionalRepositories()
         )
         this.setupKafkaConsumer()
     }

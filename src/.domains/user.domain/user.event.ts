@@ -1,3 +1,5 @@
+import { IUserSyncDBOutboxCommandRepository } from './user.outbox.repository'
+
 export interface IUserToInsert {
     userId: string
     email: string
@@ -18,4 +20,9 @@ export interface IUserEventPublisher {
 
 export interface IUserEventCommandRepository {
     bulkInsertUser(users: IUserToInsert[]): Promise<IReturnedCreatedUser[]>
+}
+
+export interface IUserEventHandlerRepositories {
+    userOutboxSyncDBCommandRepository(): IUserSyncDBOutboxCommandRepository
+    userEventCommandRepository(): IUserEventCommandRepository
 }

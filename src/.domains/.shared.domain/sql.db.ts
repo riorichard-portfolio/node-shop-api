@@ -23,6 +23,6 @@ export interface ISqlQuery {
 
 export interface ITransactionQueries extends ISqlQuery { }
 
-export interface ISqlDB extends ISqlQuery {
+export interface ISqlTransaction {
     sqlTransaction(executeQueries: (transactionQueries: ITransactionQueries) => Promise<void>): Promise<void>
 }

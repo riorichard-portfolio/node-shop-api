@@ -1,8 +1,7 @@
-import { IAuthEventCommandRepository } from "../.domains/auth.domain/auth.event";
-import { IAuthSyncDBOutboxCommandRepository } from '../.domains/auth.domain/auth.outbox.repository'
+import { IAuthEventHandlerRepositories } from "../.domains/auth.domain/auth.event";
 import { ISessionToInsert } from "../.domains/auth.domain/auth.event";
 import { TConsumerHandler } from "../.domains/.shared.domain/message.broker";
-import { ITransactionalRepositories } from '../.domains/.shared.domain/transactional.repositories'
+import { ITransactionalRepositories } from "../.domains/.shared.domain/transactional.repositories";
 
 import EventHandler from "./.base.event.handler";
 
@@ -12,15 +11,11 @@ const sessionMessageSchema = {
     userId: 'uuid',
 } as const
 
-interface IAuthEventHandlerRepositories {
-    authOutboxSyncDBCommandRepository(): IAuthSyncDBOutboxCommandRepository
-    authCommandRepository(): IAuthEventCommandRepository
-}
 
 
 export default class AuthEventHandler extends EventHandler {
     constructor(
-        private readonly repositories: ITransactionalRepositories<IAuthEventHandlerRepositories>
+        private readonly transactionalRepositories: ITransactionalRepositories<IAuthEventHandlerRepositories>
     ) {
         super()
     }
@@ -37,9 +32,9 @@ export default class AuthEventHandler extends EventHandler {
             }
         })
         if (sessions.length > 0) {
-            this.repositories.transaction(async (transactionRepositories: IAuthEventHandlerRepositories) => {
+            this.transactionalRepositories.transaction(async (transactionRepositories) => {
                 const insertedSessions = await transactionRepositories
-                    .authCommandRepository()
+                    .authEventCommandRepository()
                     .bulkUpsertSession(sessions)
                 if (insertedSessions.length > 0) {
                     await transactionRepositories

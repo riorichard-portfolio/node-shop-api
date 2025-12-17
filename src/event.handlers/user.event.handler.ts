@@ -1,5 +1,4 @@
-import { IUserEventCommandRepository } from "../.domains/user.domain/user.event";
-import { IUserSyncDBOutboxCommandRepository } from "src/.domains/user.domain/user.outbox.repository";
+import { IUserEventHandlerRepositories } from "../.domains/user.domain/user.event";
 import { IUserToInsert } from "../.domains/user.domain/user.event";
 import { TConsumerHandler } from "../.domains/.shared.domain/message.broker";
 import { ITransactionalRepositories } from '../.domains/.shared.domain/transactional.repositories'
@@ -12,11 +11,6 @@ const userMessageSchema = {
     hashedPassword: 'string',
     fullname: 'string'
 } as const
-
-interface IUserEventHandlerRepositories {
-    userOutboxSyncDBCommandRepository(): IUserSyncDBOutboxCommandRepository
-    userCommandRepository(): IUserEventCommandRepository
-}
 
 export default class UserEventHandler extends EventHandler {
     constructor(
@@ -37,9 +31,9 @@ export default class UserEventHandler extends EventHandler {
             }
         })
         if (users.length > 0) {
-            this.repositories.transaction(async (transactionRepositories: IUserEventHandlerRepositories) => {
+            this.repositories.transaction(async (transactionRepositories) => {
                 const insertedUsers = await transactionRepositories
-                    .userCommandRepository()
+                    .userEventCommandRepository()
                     .bulkInsertUser(users)
                 if (insertedUsers.length > 0) {
                     await transactionRepositories

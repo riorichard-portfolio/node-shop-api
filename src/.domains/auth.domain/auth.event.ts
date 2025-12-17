@@ -1,3 +1,5 @@
+import { IAuthSyncDBOutboxCommandRepository } from './auth.outbox.repository'
+
 export interface ISessionToInsert {
     sessionId: string
     userId: string
@@ -16,4 +18,9 @@ export interface IAuthEventPublisher {
 
 export interface IAuthEventCommandRepository {
     bulkUpsertSession(sessions: ISessionToInsert[]): Promise<IReturnedCreatedSession[]>
+}
+
+export interface IAuthEventHandlerRepositories {
+    authOutboxSyncDBCommandRepository(): IAuthSyncDBOutboxCommandRepository
+    authEventCommandRepository(): IAuthEventCommandRepository
 }

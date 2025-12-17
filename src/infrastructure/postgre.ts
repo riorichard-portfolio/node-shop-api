@@ -5,7 +5,7 @@ import {
     TParam,
     IQuerySchema,
     TSchemaToType,
-    ISqlDB,
+    ISqlTransaction,
     ISqlQuery
 } from '../.domains/.shared.domain/sql.db'
 
@@ -47,7 +47,7 @@ class TransactionQueries implements ISqlQuery {
 
 }
 
-export default class Postgre implements ISqlDB {
+export default class Postgre implements ISqlQuery, ISqlTransaction {
     protected readonly pool: Pool;
 
     constructor(config: IPostgreConfig) {
